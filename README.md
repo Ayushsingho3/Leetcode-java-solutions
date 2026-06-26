@@ -4,6 +4,7 @@ A collection of LeetCode questions to ace the coding interview! - Created using 
 ## Array
 |  |
 | ------- |
+| [2977-minimum-cost-to-convert-string-ii](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/2977-minimum-cost-to-convert-string-ii) |
 | [3739-count-subarrays-with-majority-element-ii](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/3739-count-subarrays-with-majority-element-ii) |
 ## Hash Table
 |  |
@@ -25,4 +26,24 @@ A collection of LeetCode questions to ace the coding interview! - Created using 
 |  |
 | ------- |
 | [3739-count-subarrays-with-majority-element-ii](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/3739-count-subarrays-with-majority-element-ii) |
+## String
+|  |
+| ------- |
+| [2977-minimum-cost-to-convert-string-ii](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/2977-minimum-cost-to-convert-string-ii) |
+## Dynamic Programming
+|  |
+| ------- |
+| [2977-minimum-cost-to-convert-string-ii](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/2977-minimum-cost-to-convert-string-ii) |
+## Graph Theory
+|  |
+| ------- |
+| [2977-minimum-cost-to-convert-string-ii](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/2977-minimum-cost-to-convert-string-ii) |
+## Trie
+|  |
+| ------- |
+| [2977-minimum-cost-to-convert-string-ii](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/2977-minimum-cost-to-convert-string-ii) |
+## Shortest Path
+|  |
+| ------- |
+| [2977-minimum-cost-to-convert-string-ii](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/2977-minimum-cost-to-convert-string-ii) |
 <!---LeetCode Topics End-->
