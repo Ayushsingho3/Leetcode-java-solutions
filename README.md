@@ -6,10 +6,12 @@ A collection of LeetCode questions to ace the coding interview! - Created using 
 | ------- |
 | [0744-find-smallest-letter-greater-than-target](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/0744-find-smallest-letter-greater-than-target) |
 | [2977-minimum-cost-to-convert-string-ii](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/2977-minimum-cost-to-convert-string-ii) |
+| [3020-find-the-maximum-number-of-elements-in-subset](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/3020-find-the-maximum-number-of-elements-in-subset) |
 | [3739-count-subarrays-with-majority-element-ii](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/3739-count-subarrays-with-majority-element-ii) |
 ## Hash Table
 |  |
 | ------- |
+| [3020-find-the-maximum-number-of-elements-in-subset](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/3020-find-the-maximum-number-of-elements-in-subset) |
 | [3739-count-subarrays-with-majority-element-ii](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/3739-count-subarrays-with-majority-element-ii) |
 ## Divide and Conquer
 |  |
@@ -51,4 +53,8 @@ A collection of LeetCode questions to ace the coding interview! - Created using 
 |  |
 | ------- |
 | [0744-find-smallest-letter-greater-than-target](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/0744-find-smallest-letter-greater-than-target) |
+## Enumeration
+|  |
+| ------- |
+| [3020-find-the-maximum-number-of-elements-in-subset](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/3020-find-the-maximum-number-of-elements-in-subset) |
 <!---LeetCode Topics End-->
