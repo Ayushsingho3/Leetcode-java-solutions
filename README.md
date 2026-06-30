@@ -34,6 +34,7 @@ A collection of LeetCode questions to ace the coding interview! - Created using 
 ## Prefix Sum
 |  |
 | ------- |
+| [3015-count-the-number-of-houses-at-a-certain-distance-i](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/3015-count-the-number-of-houses-at-a-certain-distance-i) |
 | [3739-count-subarrays-with-majority-element-ii](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/3739-count-subarrays-with-majority-element-ii) |
 ## String
 |  |
@@ -49,6 +50,7 @@ A collection of LeetCode questions to ace the coding interview! - Created using 
 |  |
 | ------- |
 | [2977-minimum-cost-to-convert-string-ii](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/2977-minimum-cost-to-convert-string-ii) |
+| [3015-count-the-number-of-houses-at-a-certain-distance-i](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/3015-count-the-number-of-houses-at-a-certain-distance-i) |
 ## Trie
 |  |
 | ------- |
@@ -92,4 +94,8 @@ A collection of LeetCode questions to ace the coding interview! - Created using 
 |  |
 | ------- |
 | [3014-minimum-number-of-pushes-to-type-word-i](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/3014-minimum-number-of-pushes-to-type-word-i) |
+## Breadth-First Search
+|  |
+| ------- |
+| [3015-count-the-number-of-houses-at-a-certain-distance-i](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/3015-count-the-number-of-houses-at-a-certain-distance-i) |
 <!---LeetCode Topics End-->
