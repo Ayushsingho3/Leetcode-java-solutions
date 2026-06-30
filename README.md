@@ -7,6 +7,7 @@ A collection of LeetCode questions to ace the coding interview! - Created using 
 | [0744-find-smallest-letter-greater-than-target](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/0744-find-smallest-letter-greater-than-target) |
 | [2977-minimum-cost-to-convert-string-ii](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/2977-minimum-cost-to-convert-string-ii) |
 | [3010-divide-an-array-into-subarrays-with-minimum-cost-i](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/3010-divide-an-array-into-subarrays-with-minimum-cost-i) |
+| [3011-find-if-array-can-be-sorted](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/3011-find-if-array-can-be-sorted) |
 | [3020-find-the-maximum-number-of-elements-in-subset](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/3020-find-the-maximum-number-of-elements-in-subset) |
 | [3637-trionic-array-i](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/3637-trionic-array-i) |
 | [3739-count-subarrays-with-majority-element-ii](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/3739-count-subarrays-with-majority-element-ii) |
@@ -66,8 +67,13 @@ A collection of LeetCode questions to ace the coding interview! - Created using 
 |  |
 | ------- |
 | [3010-divide-an-array-into-subarrays-with-minimum-cost-i](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/3010-divide-an-array-into-subarrays-with-minimum-cost-i) |
+| [3011-find-if-array-can-be-sorted](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/3011-find-if-array-can-be-sorted) |
 ## Sliding Window
 |  |
 | ------- |
 | [1358-number-of-substrings-containing-all-three-characters](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/1358-number-of-substrings-containing-all-three-characters) |
+## Bit Manipulation
+|  |
+| ------- |
+| [3011-find-if-array-can-be-sorted](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/3011-find-if-array-can-be-sorted) |
 <!---LeetCode Topics End-->
