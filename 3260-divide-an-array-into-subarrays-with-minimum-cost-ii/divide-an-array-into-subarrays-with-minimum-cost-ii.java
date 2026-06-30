@@ -5,7 +5,7 @@ class Solution {
         Window win = new Window(k - 1);
         int n = nums.length;
         
-        for (int i = 1; i <= Math.min(dist + 1, n - 1); i++) {
+        for (int i = 1; i <= dist + 1 && i < n; i++) {
             win.add(nums[i]);
         }
         
@@ -26,10 +26,10 @@ class Solution {
         int leftCount = 0;
         int rightCount = 0;
         long leftSum = 0;
-        int k;
+        int limit;
 
-        public Window(int k) {
-            this.k = k;
+        public Window(int limit) {
+            this.limit = limit;
         }
 
         public void add(int val) {
@@ -37,7 +37,7 @@ class Solution {
             leftCount++;
             leftSum += val;
 
-            if (leftCount > k) {
+            if (leftCount > limit) {
                 int maxLeft = left.lastKey();
                 removeFromMap(left, maxLeft);
                 leftCount--;
@@ -58,7 +58,7 @@ class Solution {
                 leftSum -= val;
             }
 
-            if (leftCount < k && rightCount > 0) {
+            if (leftCount < limit && rightCount > 0) {
                 int minRight = right.firstKey();
                 removeFromMap(right, minRight);
                 rightCount--;
