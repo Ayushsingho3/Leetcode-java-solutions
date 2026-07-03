@@ -12,6 +12,7 @@ A collection of LeetCode questions to ace the coding interview! - Created using 
 | [3020-find-the-maximum-number-of-elements-in-subset](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/3020-find-the-maximum-number-of-elements-in-subset) |
 | [3620-network-recovery-pathways](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/3620-network-recovery-pathways) |
 | [3637-trionic-array-i](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/3637-trionic-array-i) |
+| [3640-trionic-array-ii](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/3640-trionic-array-ii) |
 | [3739-count-subarrays-with-majority-element-ii](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/3739-count-subarrays-with-majority-element-ii) |
 ## Hash Table
 |  |
@@ -48,6 +49,7 @@ A collection of LeetCode questions to ace the coding interview! - Created using 
 | ------- |
 | [2977-minimum-cost-to-convert-string-ii](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/2977-minimum-cost-to-convert-string-ii) |
 | [3620-network-recovery-pathways](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/3620-network-recovery-pathways) |
+| [3640-trionic-array-ii](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/3640-trionic-array-ii) |
 ## Graph Theory
 |  |
 | ------- |
