@@ -1,36 +1,48 @@
 class Solution {
     public long maxSumTrionic(int[] nums) {
-        long prev_s1 = -1_000_000_000_000_000_000L;
-        long prev_s2 = -1_000_000_000_000_000_000L;
-        long prev_s3 = -1_000_000_000_000_000_000L;
-        long ans = -1_000_000_000_000_000_000L;
+        long MIN_INF = -1_000_000_000_000_000_000L; 
+        
+        long dp0 = MIN_INF;
+        long dp1 = MIN_INF;
+        long dp2 = MIN_INF;
+        
+        long maxSum = MIN_INF;
         
         for (int i = 1; i < nums.length; i++) {
-            long s1 = -1_000_000_000_000_000_000L;
-            long s2 = -1_000_000_000_000_000_000L;
-            long s3 = -1_000_000_000_000_000_000L;
+            long next_dp0 = MIN_INF;
+            long next_dp1 = MIN_INF;
+            long next_dp2 = MIN_INF;
+            
+            long val = nums[i];
             
             if (nums[i] > nums[i - 1]) {
-                long start_s1 = (long) nums[i - 1] + nums[i];
-                long extend_s1 = prev_s1 + nums[i];
-                s1 = Math.max(start_s1, extend_s1);
+                next_dp0 = Math.max(dp0 + val, (long) nums[i - 1] + val);
                 
-                long start_s3 = prev_s2 + nums[i];
-                long extend_s3 = prev_s3 + nums[i];
-                s3 = Math.max(start_s3, extend_s3);
+                if (dp1 != MIN_INF) {
+                    next_dp2 = Math.max(next_dp2, dp1 + val);
+                }
+                if (dp2 != MIN_INF) {
+                    next_dp2 = Math.max(next_dp2, dp2 + val);
+                }
+                
             } else if (nums[i] < nums[i - 1]) {
-                long start_s2 = prev_s1 + nums[i];
-                long extend_s2 = prev_s2 + nums[i];
-                s2 = Math.max(start_s2, extend_s2);
+                if (dp0 != MIN_INF) {
+                    next_dp1 = Math.max(next_dp1, dp0 + val);
+                }
+                if (dp1 != MIN_INF) {
+                    next_dp1 = Math.max(next_dp1, dp1 + val);
+                }
             }
             
-            ans = Math.max(ans, s3);
+            dp0 = next_dp0;
+            dp1 = next_dp1;
+            dp2 = next_dp2;
             
-            prev_s1 = s1;
-            prev_s2 = s2;
-            prev_s3 = s3;
+            if (dp2 != MIN_INF) {
+                maxSum = Math.max(maxSum, dp2);
+            }
         }
         
-        return ans;
+        return maxSum == MIN_INF ? 0 : maxSum;
     }
 }
