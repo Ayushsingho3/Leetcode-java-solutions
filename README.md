@@ -53,6 +53,7 @@ A collection of LeetCode questions to ace the coding interview! - Created using 
 ## Graph Theory
 |  |
 | ------- |
+| [2492-minimum-score-of-a-path-between-two-cities](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/2492-minimum-score-of-a-path-between-two-cities) |
 | [2977-minimum-cost-to-convert-string-ii](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/2977-minimum-cost-to-convert-string-ii) |
 | [3015-count-the-number-of-houses-at-a-certain-distance-i](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/3015-count-the-number-of-houses-at-a-certain-distance-i) |
 | [3620-network-recovery-pathways](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/3620-network-recovery-pathways) |
@@ -105,9 +106,18 @@ A collection of LeetCode questions to ace the coding interview! - Created using 
 ## Breadth-First Search
 |  |
 | ------- |
+| [2492-minimum-score-of-a-path-between-two-cities](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/2492-minimum-score-of-a-path-between-two-cities) |
 | [3015-count-the-number-of-houses-at-a-certain-distance-i](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/3015-count-the-number-of-houses-at-a-certain-distance-i) |
 ## Topological Sort
 |  |
 | ------- |
 | [3620-network-recovery-pathways](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/3620-network-recovery-pathways) |
+## Depth-First Search
+|  |
+| ------- |
+| [2492-minimum-score-of-a-path-between-two-cities](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/2492-minimum-score-of-a-path-between-two-cities) |
+## Union-Find
+|  |
+| ------- |
+| [2492-minimum-score-of-a-path-between-two-cities](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/2492-minimum-score-of-a-path-between-two-cities) |
 <!---LeetCode Topics End-->
