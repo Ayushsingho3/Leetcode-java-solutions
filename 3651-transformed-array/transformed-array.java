@@ -4,9 +4,9 @@ class Solution {
         int[] result = new int[n];
         
         for (int i = 0; i < n; i++) {
-            int move = nums[i] % n;
-            int landingIndex = (i + move + n) % n;
-            result[i] = nums[landingIndex];
+            int step = nums[i] % n;
+            int targetIndex = (i + step + n) % n;
+            result[i] = nums[targetIndex];
         }
         
         return result;
