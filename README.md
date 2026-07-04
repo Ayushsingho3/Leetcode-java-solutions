@@ -10,6 +10,7 @@ A collection of LeetCode questions to ace the coding interview! - Created using 
 | [3011-find-if-array-can-be-sorted](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/3011-find-if-array-can-be-sorted) |
 | [3013-divide-an-array-into-subarrays-with-minimum-cost-ii](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/3013-divide-an-array-into-subarrays-with-minimum-cost-ii) |
 | [3020-find-the-maximum-number-of-elements-in-subset](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/3020-find-the-maximum-number-of-elements-in-subset) |
+| [3379-transformed-array](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/3379-transformed-array) |
 | [3620-network-recovery-pathways](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/3620-network-recovery-pathways) |
 | [3637-trionic-array-i](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/3637-trionic-array-i) |
 | [3640-trionic-array-ii](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/3640-trionic-array-ii) |
@@ -120,4 +121,8 @@ A collection of LeetCode questions to ace the coding interview! - Created using 
 |  |
 | ------- |
 | [2492-minimum-score-of-a-path-between-two-cities](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/2492-minimum-score-of-a-path-between-two-cities) |
+## Simulation
+|  |
+| ------- |
+| [3379-transformed-array](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/3379-transformed-array) |
 <!---LeetCode Topics End-->
