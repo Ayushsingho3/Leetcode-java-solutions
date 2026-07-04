@@ -12,6 +12,7 @@ A collection of LeetCode questions to ace the coding interview! - Created using 
 | [3020-find-the-maximum-number-of-elements-in-subset](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/3020-find-the-maximum-number-of-elements-in-subset) |
 | [3379-transformed-array](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/3379-transformed-array) |
 | [3380-maximum-area-rectangle-with-point-constraints-i](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/3380-maximum-area-rectangle-with-point-constraints-i) |
+| [3381-maximum-subarray-sum-with-length-divisible-by-k](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/3381-maximum-subarray-sum-with-length-divisible-by-k) |
 | [3620-network-recovery-pathways](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/3620-network-recovery-pathways) |
 | [3637-trionic-array-i](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/3637-trionic-array-i) |
 | [3640-trionic-array-ii](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/3640-trionic-array-ii) |
@@ -22,6 +23,7 @@ A collection of LeetCode questions to ace the coding interview! - Created using 
 | [1358-number-of-substrings-containing-all-three-characters](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/1358-number-of-substrings-containing-all-three-characters) |
 | [3013-divide-an-array-into-subarrays-with-minimum-cost-ii](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/3013-divide-an-array-into-subarrays-with-minimum-cost-ii) |
 | [3020-find-the-maximum-number-of-elements-in-subset](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/3020-find-the-maximum-number-of-elements-in-subset) |
+| [3381-maximum-subarray-sum-with-length-divisible-by-k](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/3381-maximum-subarray-sum-with-length-divisible-by-k) |
 | [3739-count-subarrays-with-majority-element-ii](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/3739-count-subarrays-with-majority-element-ii) |
 ## Divide and Conquer
 |  |
@@ -40,6 +42,7 @@ A collection of LeetCode questions to ace the coding interview! - Created using 
 |  |
 | ------- |
 | [3015-count-the-number-of-houses-at-a-certain-distance-i](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/3015-count-the-number-of-houses-at-a-certain-distance-i) |
+| [3381-maximum-subarray-sum-with-length-divisible-by-k](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/3381-maximum-subarray-sum-with-length-divisible-by-k) |
 | [3739-count-subarrays-with-majority-element-ii](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/3739-count-subarrays-with-majority-element-ii) |
 ## String
 |  |
