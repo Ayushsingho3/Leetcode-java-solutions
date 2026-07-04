@@ -11,6 +11,7 @@ A collection of LeetCode questions to ace the coding interview! - Created using 
 | [3013-divide-an-array-into-subarrays-with-minimum-cost-ii](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/3013-divide-an-array-into-subarrays-with-minimum-cost-ii) |
 | [3020-find-the-maximum-number-of-elements-in-subset](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/3020-find-the-maximum-number-of-elements-in-subset) |
 | [3379-transformed-array](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/3379-transformed-array) |
+| [3380-maximum-area-rectangle-with-point-constraints-i](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/3380-maximum-area-rectangle-with-point-constraints-i) |
 | [3620-network-recovery-pathways](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/3620-network-recovery-pathways) |
 | [3637-trionic-array-i](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/3637-trionic-array-i) |
 | [3640-trionic-array-ii](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/3640-trionic-array-ii) |
@@ -29,6 +30,7 @@ A collection of LeetCode questions to ace the coding interview! - Created using 
 ## Segment Tree
 |  |
 | ------- |
+| [3380-maximum-area-rectangle-with-point-constraints-i](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/3380-maximum-area-rectangle-with-point-constraints-i) |
 | [3739-count-subarrays-with-majority-element-ii](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/3739-count-subarrays-with-majority-element-ii) |
 ## Merge Sort
 |  |
@@ -77,11 +79,13 @@ A collection of LeetCode questions to ace the coding interview! - Created using 
 | ------- |
 | [3010-divide-an-array-into-subarrays-with-minimum-cost-i](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/3010-divide-an-array-into-subarrays-with-minimum-cost-i) |
 | [3020-find-the-maximum-number-of-elements-in-subset](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/3020-find-the-maximum-number-of-elements-in-subset) |
+| [3380-maximum-area-rectangle-with-point-constraints-i](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/3380-maximum-area-rectangle-with-point-constraints-i) |
 ## Sorting
 |  |
 | ------- |
 | [3010-divide-an-array-into-subarrays-with-minimum-cost-i](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/3010-divide-an-array-into-subarrays-with-minimum-cost-i) |
 | [3011-find-if-array-can-be-sorted](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/3011-find-if-array-can-be-sorted) |
+| [3380-maximum-area-rectangle-with-point-constraints-i](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/3380-maximum-area-rectangle-with-point-constraints-i) |
 ## Sliding Window
 |  |
 | ------- |
@@ -100,6 +104,7 @@ A collection of LeetCode questions to ace the coding interview! - Created using 
 |  |
 | ------- |
 | [3014-minimum-number-of-pushes-to-type-word-i](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/3014-minimum-number-of-pushes-to-type-word-i) |
+| [3380-maximum-area-rectangle-with-point-constraints-i](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/3380-maximum-area-rectangle-with-point-constraints-i) |
 ## Greedy
 |  |
 | ------- |
@@ -125,4 +130,12 @@ A collection of LeetCode questions to ace the coding interview! - Created using 
 |  |
 | ------- |
 | [3379-transformed-array](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/3379-transformed-array) |
+## Binary Indexed Tree
+|  |
+| ------- |
+| [3380-maximum-area-rectangle-with-point-constraints-i](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/3380-maximum-area-rectangle-with-point-constraints-i) |
+## Geometry
+|  |
+| ------- |
+| [3380-maximum-area-rectangle-with-point-constraints-i](https://github.com/Ayushsingho3/Leetcode-java-solutions/tree/master/3380-maximum-area-rectangle-with-point-constraints-i) |
 <!---LeetCode Topics End-->
