@@ -7,18 +7,21 @@ class Solution {
         int n = nums.length;
         
         for (int i = 0; i < n; i++) {
-            Set<Integer> even = new HashSet<>();
-            Set<Integer> odd = new HashSet<>();
+            Set<Integer> evens = new HashSet<>();
+            Set<Integer> odds = new HashSet<>();
             
             for (int j = i; j < n; j++) {
                 if (nums[j] % 2 == 0) {
-                    even.add(nums[j]);
+                    evens.add(nums[j]);
                 } else {
-                    odd.add(nums[j]);
+                    odds.add(nums[j]);
                 }
                 
-                if (even.size() == odd.size()) {
-                    maxLen = Math.max(maxLen, j - i + 1);
+                if (evens.size() == odds.size()) {
+                    int currentLen = j - i + 1;
+                    if (currentLen > maxLen) {
+                        maxLen = currentLen;
+                    }
                 }
             }
         }
