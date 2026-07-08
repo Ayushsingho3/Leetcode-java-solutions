@@ -13,38 +13,45 @@
  *     }
  * }
  */
-import java.util.ArrayList;
-import java.util.List;
-
 class Solution {
+    private TreeNode[] nodes;
+    private int index = 0;
+
     public TreeNode balanceBST(TreeNode root) {
-        List<TreeNode> sortedNodes = new ArrayList<>();
-      
-        inorderTraversal(root, sortedNodes);
+        int count = countNodes(root);
+        nodes = new TreeNode[count];
+        index = 0;
         
-        return buildBalancedBST(sortedNodes, 0, sortedNodes.size() - 1);
+        inorder(root);
+        
+        return build(0, count - 1);
     }
-    
-    private void inorderTraversal(TreeNode node, List<TreeNode> sortedNodes) {
+
+    private int countNodes(TreeNode node) {
+        if (node == null) {
+            return 0;
+        }
+        return 1 + countNodes(node.left) + countNodes(node.right);
+    }
+
+    private void inorder(TreeNode node) {
         if (node == null) {
             return;
         }
-        inorderTraversal(node.left, sortedNodes);
-        sortedNodes.add(node);
-        inorderTraversal(node.right, sortedNodes);
+        inorder(node.left);
+        nodes[index++] = node;
+        inorder(node.right);
     }
-    
-    private TreeNode buildBalancedBST(List<TreeNode> sortedNodes, int start, int end) {
-       
-        if (start > end) {
+
+    private TreeNode build(int left, int right) {
+        if (left > right) {
             return null;
         }
+        int mid = left + (right - left) / 2;
+        TreeNode node = nodes[mid];
         
-        int mid = start + (end - start) / 2;
-        TreeNode node = sortedNodes.get(mid);
-        
-        node.left = buildBalancedBST(sortedNodes, start, mid - 1);
-        node.right = buildBalancedBST(sortedNodes, mid + 1, end);
+        node.left = build(left, mid - 1);
+        node.right = build(mid + 1, right);
         
         return node;
     }
