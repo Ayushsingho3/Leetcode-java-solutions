@@ -1,34 +1,91 @@
+import java.util.Arrays;
+
 class Solution {
-    int[] minVal;
-    int[] maxVal;
-    int[] lazy;
+    private int[] minVal;
+    private int[] maxVal;
+    private int[] lazy;
 
     public int longestBalanced(int[] nums) {
         int n = nums.length;
         if (n == 0) return 0;
 
-        int treeSize = 4 * n;
+        int treeSize = (n << 2) + 1;
         minVal = new int[treeSize];
         maxVal = new int[treeSize];
         lazy = new int[treeSize];
 
-        IntHashMap map = new IntHashMap(n);
+        int min = nums[0];
+        int max = nums[0];
+        for (int i = 1; i < n; i++) {
+            if (nums[i] < min) min = nums[i];
+            else if (nums[i] > max) max = nums[i];
+        }
+
+        long range = (long) max - (long) min;
+        boolean direct = range <= 500000;
+
+        int[] lastPos;
+        int[] temp = null;
+        int m = 0;
+
+        if (direct) {
+            lastPos = new int[(int) range + 1];
+            for (int i = 0; i < lastPos.length; i++) {
+                lastPos[i] = -1;
+            }
+        } else {
+            temp = nums.clone();
+            Arrays.sort(temp);
+            for (int i = 0; i < n; i++) {
+                if (i == 0 || temp[i] != temp[i - 1]) {
+                    temp[m++] = temp[i];
+                }
+            }
+            lastPos = new int[m];
+            for (int i = 0; i < m; i++) {
+                lastPos[i] = -1;
+            }
+        }
+
         int maxLen = 0;
 
         for (int i = 0; i < n; i++) {
             int num = nums[i];
-            int prev = map.updateAndGetPrev(num, i);
+            int id;
+
+            if (direct) {
+                id = num - min;
+            } else {
+                int low = 0;
+                int high = m - 1;
+                id = 0;
+                while (low <= high) {
+                    int mid = (low + high) >>> 1;
+                    if (temp[mid] < num) {
+                        low = mid + 1;
+                    } else if (temp[mid] > num) {
+                        high = mid - 1;
+                    } else {
+                        id = mid;
+                        break;
+                    }
+                }
+            }
+
+            int prev = lastPos[id];
+            lastPos[id] = i;
+
             int val = (num % 2 == 0) ? 1 : -1;
 
-            update(1, 0, n - 1, prev + 1, i, val);
+            if (prev + 1 <= i) {
+                update(1, 0, n - 1, prev + 1, i, val);
+            }
 
-            if (minVal[1] <= 0 && maxVal[1] >= 0) {
-                int firstZero = queryFirstZero(1, 0, n - 1);
-                if (firstZero <= i) {
-                    int len = i - firstZero + 1;
-                    if (len > maxLen) {
-                        maxLen = len;
-                    }
+            int firstZero = queryFirstZero(1, 0, n - 1, i);
+            if (firstZero != -1) {
+                int len = i - firstZero + 1;
+                if (len > maxLen) {
+                    maxLen = len;
                 }
             }
         }
@@ -36,12 +93,19 @@ class Solution {
         return maxLen;
     }
 
-    private void pushDown(int node) {
-        int lz = lazy[node];
-        if (lz != 0) {
-            int left = node << 1;
-            int right = left | 1;
+    private void update(int node, int l, int r, int ql, int qr, int val) {
+        if (ql <= l && r <= qr) {
+            minVal[node] += val;
+            maxVal[node] += val;
+            lazy[node] += val;
+            return;
+        }
 
+        int left = node << 1;
+        int right = left | 1;
+        int lz = lazy[node];
+
+        if (lz != 0) {
             lazy[left] += lz;
             minVal[left] += lz;
             maxVal[left] += lz;
@@ -52,19 +116,8 @@ class Solution {
 
             lazy[node] = 0;
         }
-    }
 
-    private void update(int node, int l, int r, int ql, int qr, int val) {
-        if (ql <= l && r <= qr) {
-            minVal[node] += val;
-            maxVal[node] += val;
-            lazy[node] += val;
-            return;
-        }
-        pushDown(node);
-        int mid = l + (r - l) / 2;
-        int left = node << 1;
-        int right = left | 1;
+        int mid = (l + r) >>> 1;
 
         if (ql <= mid) {
             update(left, l, mid, ql, qr, val);
@@ -73,65 +126,46 @@ class Solution {
             update(right, mid + 1, r, ql, qr, val);
         }
 
-        minVal[node] = minVal[left] < minVal[right] ? minVal[left] : minVal[right];
-        maxVal[node] = maxVal[left] > maxVal[right] ? maxVal[left] : maxVal[right];
+        int lMin = minVal[left];
+        int rMin = minVal[right];
+        minVal[node] = lMin < rMin ? lMin : rMin;
+
+        int lMax = maxVal[left];
+        int rMax = maxVal[right];
+        maxVal[node] = lMax > rMax ? lMax : rMax;
     }
 
-    private int queryFirstZero(int node, int l, int r) {
+    private int queryFirstZero(int node, int l, int r, int qr) {
+        if (l > qr || minVal[node] > 0 || maxVal[node] < 0) {
+            return -1;
+        }
         if (l == r) {
             return l;
         }
-        pushDown(node);
-        int mid = l + (r - l) / 2;
+
         int left = node << 1;
+        int right = left | 1;
+        int lz = lazy[node];
 
-        if (minVal[left] <= 0 && maxVal[left] >= 0) {
-            return queryFirstZero(left, l, mid);
-        } else {
-            return queryFirstZero(left | 1, mid + 1, r);
-        }
-    }
+        if (lz != 0) {
+            lazy[left] += lz;
+            minVal[left] += lz;
+            maxVal[left] += lz;
 
-    class IntHashMap {
-        int[] keys;
-        int[] vals;
-        boolean[] used;
-        int mask;
+            lazy[right] += lz;
+            minVal[right] += lz;
+            maxVal[right] += lz;
 
-        public IntHashMap(int size) {
-            int capacity = 1;
-            while (capacity < size) capacity <<= 1;
-            capacity <<= 1;
-            mask = capacity - 1;
-            keys = new int[capacity];
-            vals = new int[capacity];
-            used = new boolean[capacity];
-            for (int i = 0; i < capacity; i++) {
-                vals[i] = -1;
-            }
+            lazy[node] = 0;
         }
 
-        public int updateAndGetPrev(int key, int newVal) {
-            int idx = hash(key) & mask;
-            while (used[idx]) {
-                if (keys[idx] == key) {
-                    int prev = vals[idx];
-                    vals[idx] = newVal;
-                    return prev;
-                }
-                idx = (idx + 1) & mask;
-            }
-            used[idx] = true;
-            keys[idx] = key;
-            vals[idx] = newVal;
-            return -1;
+        int mid = (l + r) >>> 1;
+
+        int res = queryFirstZero(left, l, mid, qr);
+        if (res != -1) {
+            return res;
         }
 
-        private int hash(int x) {
-            x = ((x >>> 16) ^ x) * 0x45d9f3b;
-            x = ((x >>> 16) ^ x) * 0x45d9f3b;
-            x = (x >>> 16) ^ x;
-            return x;
-        }
+        return queryFirstZero(right, mid + 1, r, qr);
     }
 }
