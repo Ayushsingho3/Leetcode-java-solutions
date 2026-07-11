@@ -17,6 +17,7 @@ class Solution {
                     distinct++;
                 }
                 counts[c]++;
+                
                 if (counts[c] > maxF) {
                     maxF = counts[c];
                 }
