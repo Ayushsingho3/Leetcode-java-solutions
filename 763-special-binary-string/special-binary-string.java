@@ -16,14 +16,12 @@ class Solution {
             }
             
             if (count == 0) {
-                String inner = s.substring(i + 1, j);
-                res.add("1" + makeLargestSpecial(inner) + "0");
+                res.add("1" + makeLargestSpecial(s.substring(i + 1, j)) + "0");
                 i = j + 1;
             }
         }
         
         Collections.sort(res, Collections.reverseOrder());
-        
         return String.join("", res);
     }
 }
