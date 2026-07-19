@@ -8,7 +8,7 @@ class Solution {
         int i = 0;
         List<String> res = new ArrayList<>();
         
-        for (int j = 0; j < s.length(); j++) {
+        for (int j = 0; j < s.length(); ++j) {
             if (s.charAt(j) == '1') {
                 count++;
             } else {
