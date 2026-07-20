@@ -1,64 +1,70 @@
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.Queue;
-
 class Solution {
+    int[] parent;
+    
     public int minOperations(String s, int k) {
         int n = s.length();
-        int start = 0;
-        
+        int initialZeros = 0;
         for (int i = 0; i < n; i++) {
             if (s.charAt(i) == '0') {
-                start++;
+                initialZeros++;
             }
         }
         
-        if (start == 0) return 0;
+        if (initialZeros == 0) return 0;
         
-        int[] nextUnvisited = new int[n + 3];
-        for (int i = 0; i < nextUnvisited.length; i++) {
-            nextUnvisited[i] = i;
+        parent = new int[n + 3];
+        for (int i = 0; i < parent.length; i++) {
+            parent[i] = i;
         }
         
-        Queue<Integer> q = new LinkedList<>();
-        q.offer(start);
-        
         int[] dist = new int[n + 1];
-        Arrays.fill(dist, -1);
-        dist[start] = 0;
+        for (int i = 0; i <= n; i++) {
+            dist[i] = -1;
+        }
         
-        nextUnvisited[start] = start + 2;
+        int[] q = new int[n + 1];
+        int head = 0, tail = 0;
         
-        while (!q.isEmpty()) {
-            int cur = q.poll();
+        q[tail++] = initialZeros;
+        dist[initialZeros] = 0;
+        remove(initialZeros);
+        
+        while (head < tail) {
+            int cur = q[head++];
+            int d = dist[cur];
             
-            int minX = Math.max(0, k - n + cur);
-            int maxX = Math.min(cur, k);
+            int minZerosFlipped = Math.max(0, k - (n - cur));
+            int maxZerosFlipped = Math.min(cur, k);
             
-            int minZ = cur + k - 2 * maxX;
-            int maxZ = cur + k - 2 * minX;
+            int minNext = cur + k - 2 * maxZerosFlipped;
+            int maxNext = cur + k - 2 * minZerosFlipped;
             
-            int currZ = find(minZ, nextUnvisited);
-            while (currZ <= maxZ) {
-                dist[currZ] = dist[cur] + 1;
-                
-                if (currZ == 0) {
-                    return dist[currZ];
-                }
-                
-                q.offer(currZ);
-                nextUnvisited[currZ] = currZ + 2;
-                currZ = find(currZ, nextUnvisited);
+            for (int next = find(minNext); next <= maxNext; next = find(next)) {
+                dist[next] = d + 1;
+                if (next == 0) return dist[next];
+                q[tail++] = next;
+                remove(next);
             }
         }
         
         return -1;
     }
     
-    private int find(int i, int[] nextUnvisited) {
-        if (nextUnvisited[i] == i) {
-            return i;
+    private int find(int i) {
+        int root = i;
+        while (root != parent[root]) {
+            root = parent[root];
         }
-        return nextUnvisited[i] = find(nextUnvisited[i], nextUnvisited);
+        int curr = i;
+        while (curr != root) {
+            int nxt = parent[curr];
+            parent[curr] = root;
+            curr = nxt;
+        }
+        return root;
+    }
+    
+    private void remove(int i) {
+        parent[i] = find(i + 2);
     }
 }
