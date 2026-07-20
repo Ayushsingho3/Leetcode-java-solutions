@@ -1,14 +1,12 @@
-import java.util.Arrays;
-
 class Solution {
     public int[] sortByBits(int[] arr) {
-        long[] combined = new long[arr.length];
+        long[] encoded = new long[arr.length];
         for (int i = 0; i < arr.length; i++) {
-            combined[i] = ((long) Integer.bitCount(arr[i]) << 32) | (arr[i] & 0xFFFFFFFFL);
+            encoded[i] = ((long) Integer.bitCount(arr[i]) << 32) | arr[i];
         }
-        Arrays.sort(combined);
+        java.util.Arrays.sort(encoded);
         for (int i = 0; i < arr.length; i++) {
-            arr[i] = (int) combined[i];
+            arr[i] = (int) encoded[i];
         }
         return arr;
     }
