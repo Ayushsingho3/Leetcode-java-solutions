@@ -1,13 +1,25 @@
+import java.util.Arrays;
+
 class Solution {
     public int[] sortByBits(int[] arr) {
-        long[] encoded = new long[arr.length];
+        Integer[] boxedArr = new Integer[arr.length];
         for (int i = 0; i < arr.length; i++) {
-            encoded[i] = ((long) Integer.bitCount(arr[i]) << 32) | arr[i];
+            boxedArr[i] = arr[i];
         }
-        java.util.Arrays.sort(encoded);
+        
+        Arrays.sort(boxedArr, (a, b) -> {
+            int bitCountA = Integer.bitCount(a);
+            int bitCountB = Integer.bitCount(b);
+            if (bitCountA == bitCountB) {
+                return a - b;
+            }
+            return bitCountA - bitCountB;
+        });
+        
         for (int i = 0; i < arr.length; i++) {
-            arr[i] = (int) encoded[i];
+            arr[i] = boxedArr[i];
         }
+        
         return arr;
     }
 }
