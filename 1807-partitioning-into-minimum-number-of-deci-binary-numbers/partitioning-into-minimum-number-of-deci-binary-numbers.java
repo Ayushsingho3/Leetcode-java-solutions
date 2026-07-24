@@ -3,8 +3,10 @@ class Solution {
         int maxDigit = 0;
         
         for (int i = 0; i < n.length(); i++) {
-            maxDigit = Math.max(maxDigit, n.charAt(i) - '0');
-            
+            int currentDigit = n.charAt(i) - '0';
+            if (currentDigit > maxDigit) {
+                maxDigit = currentDigit;
+            }
             if (maxDigit == 9) {
                 break;
             }
