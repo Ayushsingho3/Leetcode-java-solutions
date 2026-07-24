@@ -1,6 +1,6 @@
+import java.util.*;
+
 class Solution {
-    int[] parent;
-    
     public int minOperations(String s, int k) {
         int n = s.length();
         int initialZeros = 0;
@@ -10,61 +10,53 @@ class Solution {
             }
         }
         
-        if (initialZeros == 0) return 0;
-        
-        parent = new int[n + 3];
-        for (int i = 0; i < parent.length; i++) {
-            parent[i] = i;
+        if (initialZeros == 0) {
+            return 0;
         }
         
-        int[] dist = new int[n + 1];
+        @SuppressWarnings("unchecked")
+        TreeSet<Integer>[] unvisited = new TreeSet[2];
+        unvisited[0] = new TreeSet<>();
+        unvisited[1] = new TreeSet<>();
+        
         for (int i = 0; i <= n; i++) {
-            dist[i] = -1;
+            unvisited[i & 1].add(i);
         }
         
-        int[] q = new int[n + 1];
-        int head = 0, tail = 0;
+        unvisited[initialZeros & 1].remove(initialZeros);
         
-        q[tail++] = initialZeros;
-        dist[initialZeros] = 0;
-        remove(initialZeros);
+        Queue<Integer> queue = new ArrayDeque<>();
+        queue.offer(initialZeros);
         
-        while (head < tail) {
-            int cur = q[head++];
-            int d = dist[cur];
-            
-            int minZerosFlipped = Math.max(0, k - (n - cur));
-            int maxZerosFlipped = Math.min(cur, k);
-            
-            int minNext = cur + k - 2 * maxZerosFlipped;
-            int maxNext = cur + k - 2 * minZerosFlipped;
-            
-            for (int next = find(minNext); next <= maxNext; next = find(next)) {
-                dist[next] = d + 1;
-                if (next == 0) return dist[next];
-                q[tail++] = next;
-                remove(next);
+        int steps = 0;
+        
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            for (int q = 0; q < size; q++) {
+                int z = queue.poll();
+                
+                int min_i = Math.max(0, k - (n - z));
+                int max_i = Math.min(k, z);
+                
+                int z_max = z + k - 2 * min_i;
+                int z_min = z + k - 2 * max_i;
+                
+                int parity = (z + k) & 1;
+                TreeSet<Integer> targetSet = unvisited[parity];
+                
+                Integer next = targetSet.ceiling(z_min);
+                while (next != null && next <= z_max) {
+                    if (next == 0) {
+                        return steps + 1;
+                    }
+                    queue.offer(next);
+                    targetSet.remove(next);
+                    next = targetSet.ceiling(z_min);
+                }
             }
+            steps++;
         }
         
         return -1;
-    }
-    
-    private int find(int i) {
-        int root = i;
-        while (root != parent[root]) {
-            root = parent[root];
-        }
-        int curr = i;
-        while (curr != root) {
-            int nxt = parent[curr];
-            parent[curr] = root;
-            curr = nxt;
-        }
-        return root;
-    }
-    
-    private void remove(int i) {
-        parent[i] = find(i + 2);
     }
 }
