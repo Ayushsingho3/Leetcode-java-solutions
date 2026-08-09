@@ -3,19 +3,21 @@ class Solution {
         long low = 0;
         long minW = workerTimes[0];
         for (int w : workerTimes) {
-            minW = Math.min(minW, w);
+            if (w < minW) {
+                minW = w;
+            }
         }
         
         long high = minW * (long) mountainHeight * (mountainHeight + 1L) / 2L;
-        
         long ans = high;
+        
         while (low <= high) {
             long mid = low + (high - low) / 2;
             if (check(mid, mountainHeight, workerTimes)) {
                 ans = mid;
-                high = mid - 1;
+                high = mid - 1; 
             } else {
-                low = mid + 1;
+                low = mid + 1; 
             }
         }
         
