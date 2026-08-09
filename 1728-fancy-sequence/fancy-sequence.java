@@ -1,19 +1,21 @@
 class Fancy {
     private long M;
     private long A;
-    private java.util.List<Long> seq;
     private final long MOD = 1000000007;
+    private int[] seq;
+    private int size;
 
     public Fancy() {
         M = 1;
         A = 0;
-        seq = new java.util.ArrayList<>();
+        seq = new int[100005];
+        size = 0;
     }
     
     public void append(int val) {
         long x = ((val - A) % MOD + MOD) % MOD;
         x = (x * modInverse(M)) % MOD;
-        seq.add(x);
+        seq[size++] = (int) x;
     }
     
     public void addAll(int inc) {
@@ -26,10 +28,10 @@ class Fancy {
     }
     
     public int getIndex(int idx) {
-        if (idx >= seq.size()) {
+        if (idx >= size) {
             return -1;
         }
-        long x = seq.get(idx);
+        long x = seq[idx];
         long res = (x * M + A) % MOD;
         return (int) res;
     }
