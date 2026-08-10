@@ -5,30 +5,31 @@ class Solution {
             return "";
         }
         
-        k--;
         StringBuilder sb = new StringBuilder();
+        k--;
         
         int blockSize = 1 << (n - 1);
         int firstCharIdx = k / blockSize;
-        char prev = (char) ('a' + firstCharIdx);
-        sb.append(prev);
+        sb.append((char) ('a' + firstCharIdx));
         k %= blockSize;
         
         for (int i = 1; i < n; i++) {
-            blockSize = 1 << (n - 1 - i);
-            int nextIdx = k / blockSize;
+            blockSize >>= 1;
+            int nextChoice = k / blockSize;
             k %= blockSize;
             
-            int count = 0;
-            for (char c = 'a'; c <= 'c'; c++) {
-                if (c == prev) continue;
-                if (count == nextIdx) {
-                    sb.append(c);
-                    prev = c;
-                    break;
-                }
-                count++;
+            char prev = sb.charAt(sb.length() - 1);
+            char nextChar;
+            
+            if (prev == 'a') {
+                nextChar = (nextChoice == 0) ? 'b' : 'c';
+            } else if (prev == 'b') {
+                nextChar = (nextChoice == 0) ? 'a' : 'c';
+            } else {
+                nextChar = (nextChoice == 0) ? 'a' : 'b';
             }
+            
+            sb.append(nextChar);
         }
         
         return sb.toString();
