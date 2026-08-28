@@ -1,126 +1,116 @@
-import java.util.Arrays;
+import java.util.*;
 
 class Solution {
+    class Robot implements Comparable<Robot> {
+        long pos;
+        long dist;
+        Robot(long p, long d) { 
+            pos = p; 
+            dist = d; 
+        }
+        public int compareTo(Robot o) {
+            return Long.compare(this.pos, o.pos);
+        }
+    }
+
     public int maxWalls(int[] robots, int[] distance, int[] walls) {
         int n = robots.length;
+        if (n == 0) return 0;
         
-        int[][] r = new int[n][2];
+        Robot[] robs = new Robot[n];
         for (int i = 0; i < n; i++) {
-            r[i][0] = robots[i];
-            r[i][1] = distance[i];
+            robs[i] = new Robot(robots[i], distance[i]);
         }
-        Arrays.sort(r, (a, b) -> Integer.compare(a[0], b[0]));
+        Arrays.sort(robs);
         
         Arrays.sort(walls);
+        int m = 0;
+        for (int i = 0; i < walls.length; i++) {
+            if (i == 0 || walls[i] != walls[i-1]) {
+                walls[m++] = walls[i];
+            }
+        }
+        int[] uniqWalls = Arrays.copyOf(walls, m);
         
-        int[] dp = new int[2];
-        
-        int[] bounds0 = getBounds(walls, Integer.MIN_VALUE, r[0][0] - 1);
-        int start0 = bounds0[0], end0 = bounds0[1];
-        int count0L = 0;
-        if (start0 <= end0) {
-            int minL = lowerBound(walls, start0, end0, r[0][0] - r[0][1]);
-            if (minL <= end0) {
-                count0L = end0 - minL + 1;
+        int baseDestroyed = 0;
+        for (int i = 0; i < n; i++) {
+            if (i > 0 && robs[i].pos == robs[i-1].pos) continue;
+            if (binarySearch(uniqWalls, (int)robs[i].pos)) {
+                baseDestroyed++;
             }
         }
         
-        int wallsAtR0 = countEquals(walls, r[0][0]);
-        dp[0] = count0L + wallsAtR0;
-        dp[1] = wallsAtR0;
+        long[] dp = new long[2];
+        dp[0] = countWalls(robs[0].pos - robs[0].dist, robs[0].pos - 1, uniqWalls);
+        dp[1] = 0;
         
         for (int i = 1; i < n; i++) {
-            int prevX = r[i-1][0];
-            int prevD = r[i-1][1];
-            int currX = r[i][0];
-            int currD = r[i][1];
-            
-            int[] bounds = getBounds(walls, prevX + 1, currX - 1);
-            int start = bounds[0], end = bounds[1];
-            
-            int wallsAtCurr = countEquals(walls, currX);
-            
-            int costLL = 0, costLR = 0, costRL = 0, costRR = 0;
-            if (start <= end) {
-                int maxR = upperBound(walls, start, end, prevX + prevD);
-                int minL = lowerBound(walls, start, end, currX - currD);
-                
-                costLR = 0; 
-                if (minL <= end) costLL = end - minL + 1;
-                if (maxR >= start) costRR = maxR - start + 1;
-                if (maxR >= minL) {
-                    costRL = end - start + 1; 
-                } else {
-                    if (maxR >= start) costRL += maxR - start + 1;
-                    if (minL <= end) costRL += end - minL + 1;
+            long[] next_dp = new long[2];
+            for (int curr_dir = 0; curr_dir < 2; curr_dir++) {
+                long max_val = -1;
+                for (int prev_dir = 0; prev_dir < 2; prev_dir++) {
+                    long A = (prev_dir == 1) ? Math.min(robs[i-1].pos + robs[i-1].dist, robs[i].pos - 1) : robs[i-1].pos;
+                    long B = (curr_dir == 0) ? Math.max(robs[i].pos - robs[i].dist, robs[i-1].pos + 1) : robs[i].pos;
+                    
+                    long covered = countWalls(robs[i-1].pos + 1, A, uniqWalls) + countWalls(B, robs[i].pos - 1, uniqWalls);
+                    
+                    if (A >= B) {
+                        covered -= countWalls(B, A, uniqWalls);
+                    }
+                    
+                    max_val = Math.max(max_val, dp[prev_dir] + covered);
                 }
+                next_dp[curr_dir] = max_val;
             }
-            
-            int nextDp0 = Math.max(dp[0] + costLL, dp[1] + costRL) + wallsAtCurr;
-            int nextDp1 = Math.max(dp[0] + costLR, dp[1] + costRR) + wallsAtCurr;
-            
-            dp[0] = nextDp0;
-            dp[1] = nextDp1;
+            dp = next_dp;
         }
         
-        int lastX = r[n-1][0];
-        int lastD = r[n-1][1];
+        long ans = Math.max(
+            dp[0],
+            dp[1] + countWalls(robs[n-1].pos + 1, robs[n-1].pos + robs[n-1].dist, uniqWalls)
+        );
         
-        int[] boundsN = getBounds(walls, lastX + 1, Integer.MAX_VALUE);
-        int startN = boundsN[0], endN = boundsN[1];
-        int countNR = 0;
-        if (startN <= endN) {
-            int maxR = upperBound(walls, startN, endN, lastX + lastD);
-            if (maxR >= startN) {
-                countNR = maxR - startN + 1;
-            }
-        }
-        
-        return Math.max(dp[0], dp[1] + countNR);
+        return (int)(ans + baseDestroyed);
     }
     
-    private int[] getBounds(int[] walls, int minVal, int maxVal) {
-        int start = lowerBound(walls, 0, walls.length - 1, minVal);
-        int end = upperBound(walls, 0, walls.length - 1, maxVal);
-        return new int[]{start, end};
-    }
-    
-    private int lowerBound(int[] arr, int start, int end, int val) {
-        int ans = end + 1;
-        int l = start, r = end;
+    private boolean binarySearch(int[] arr, int target) {
+        int l = 0, r = arr.length - 1;
         while (l <= r) {
             int mid = l + (r - l) / 2;
-            if (arr[mid] >= val) {
-                ans = mid;
-                r = mid - 1;
-            } else {
-                l = mid + 1;
-            }
+            if (arr[mid] == target) return true;
+            if (arr[mid] < target) l = mid + 1;
+            else r = mid - 1;
         }
-        return ans;
+        return false;
     }
     
-    private int upperBound(int[] arr, int start, int end, int val) {
-        int ans = start - 1;
-        int l = start, r = end;
-        while (l <= r) {
-            int mid = l + (r - l) / 2;
-            if (arr[mid] <= val) {
-                ans = mid;
-                l = mid + 1;
-            } else {
-                r = mid - 1;
-            }
-        }
-        return ans;
-    }
-    
-    private int countEquals(int[] arr, int val) {
-        int start = lowerBound(arr, 0, arr.length - 1, val);
-        if (start < arr.length && arr[start] == val) {
-            int end = upperBound(arr, 0, arr.length - 1, val);
-            return end - start + 1; 
+    private int countWalls(long L, long R, int[] walls) {
+        if (L > R) return 0;
+        int leftIdx = lowerBound(walls, L);
+        int rightIdx = upperBound(walls, R) - 1;
+        if (leftIdx <= rightIdx) {
+            return rightIdx - leftIdx + 1;
         }
         return 0;
+    }
+    
+    private int lowerBound(int[] arr, long target) {
+        int l = 0, r = arr.length;
+        while (l < r) {
+            int mid = l + (r - l) / 2;
+            if (arr[mid] >= target) r = mid;
+            else l = mid + 1;
+        }
+        return l;
+    }
+    
+    private int upperBound(int[] arr, long target) {
+        int l = 0, r = arr.length;
+        while (l < r) {
+            int mid = l + (r - l) / 2;
+            if (arr[mid] > target) r = mid;
+            else l = mid + 1;
+        }
+        return l;
     }
 }
