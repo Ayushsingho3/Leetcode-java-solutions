@@ -1,60 +1,62 @@
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Deque;
-import java.util.List;
+import java.util.*;
 
 class Solution {
+    class Robot {
+        int id;
+        int pos;
+        int health;
+        char dir;
+
+        Robot(int id, int pos, int health, char dir) {
+            this.id = id;
+            this.pos = pos;
+            this.health = health;
+            this.dir = dir;
+        }
+    }
+
     public List<Integer> survivedRobotsHealths(int[] positions, int[] healths, String directions) {
         int n = positions.length;
-        Integer[] indices = new Integer[n];
-        
+        Robot[] robots = new Robot[n];
         for (int i = 0; i < n; i++) {
-            indices[i] = i;
+            robots[i] = new Robot(i, positions[i], healths[i], directions.charAt(i));
         }
         
-        Arrays.sort(indices, (a, b) -> Integer.compare(positions[a], positions[b]));
+        Arrays.sort(robots, (a, b) -> Integer.compare(a.pos, b.pos));
         
-        Deque<Integer> stack = new ArrayDeque<>();
-        
-        for (int currIdx : indices) {
-            if (directions.charAt(currIdx) == 'R') {
-                stack.push(currIdx);
+        Deque<Robot> stack = new ArrayDeque<>();
+        for (Robot robot : robots) {
+            if (robot.dir == 'R') {
+                stack.push(robot);
             } else {
                 boolean survived = true;
-                
-                while (!stack.isEmpty() && directions.charAt(stack.peek()) == 'R') {
-                    int topIdx = stack.peek();
-                    
-                    if (healths[currIdx] > healths[topIdx]) {
-                        healths[currIdx] -= 1;
-                        healths[topIdx] = 0;
+                while (!stack.isEmpty() && stack.peek().dir == 'R') {
+                    Robot top = stack.peek();
+                    if (top.health < robot.health) {
                         stack.pop();
-                    } else if (healths[currIdx] < healths[topIdx]) {
-                        healths[topIdx] -= 1;
-                        healths[currIdx] = 0;
+                        robot.health -= 1;
+                    } else if (top.health > robot.health) {
+                        top.health -= 1;
                         survived = false;
                         break;
                     } else {
-                        healths[currIdx] = 0;
-                        healths[topIdx] = 0;
                         stack.pop();
                         survived = false;
                         break;
                     }
                 }
-                
                 if (survived) {
-                    stack.push(currIdx);
+                    stack.push(robot);
                 }
             }
         }
         
+        List<Robot> survivors = new ArrayList<>(stack);
+        survivors.sort((a, b) -> Integer.compare(a.id, b.id));
+        
         List<Integer> result = new ArrayList<>();
-        for (int i = 0; i < n; i++) {
-            if (healths[i] > 0) {
-                result.add(healths[i]);
-            }
+        for (Robot r : survivors) {
+            result.add(r.health);
         }
         
         return result;
