@@ -1,32 +1,39 @@
+import java.util.HashSet;
+import java.util.Set;
+
 class Solution {
     public int robotSim(int[] commands, int[][] obstacles) {
-        int[][] dirs = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
-        int x = 0, y = 0, dir = 0;
-        int maxDistSq = 0;
+        int[] dx = {0, 1, 0, -1};
+        int[] dy = {1, 0, -1, 0};
+        int x = 0;
+        int y = 0;
+        int direction = 0;
         
-        java.util.Set<Long> obstacleSet = new java.util.HashSet<>();
+        Set<Long> obsSet = new HashSet<>();
         for (int[] obs : obstacles) {
-            long hash = (((long) obs[0]) << 32) | (((long) obs[1]) & 0xFFFFFFFFL);
-            obstacleSet.add(hash);
+            obsSet.add(((long) obs[0] << 32) | (obs[1] & 0xFFFFFFFFL));
         }
+        
+        int maxDistSq = 0;
         
         for (int cmd : commands) {
             if (cmd == -2) {
-                dir = (dir + 3) % 4;
+                direction = (direction + 3) % 4;
             } else if (cmd == -1) {
-                dir = (dir + 1) % 4;
+                direction = (direction + 1) % 4;
             } else {
-                for (int k = 0; k < cmd; k++) {
-                    int nextX = x + dirs[dir][0];
-                    int nextY = y + dirs[dir][1];
-                    long hash = (((long) nextX) << 32) | (((long) nextY) & 0xFFFFFFFFL);
+                for (int i = 0; i < cmd; i++) {
+                    int nx = x + dx[direction];
+                    int ny = y + dy[direction];
                     
-                    if (obstacleSet.contains(hash)) {
+                    long hash = ((long) nx << 32) | (ny & 0xFFFFFFFFL);
+                    
+                    if (obsSet.contains(hash)) {
                         break;
                     }
                     
-                    x = nextX;
-                    y = nextY;
+                    x = nx;
+                    y = ny;
                     maxDistSq = Math.max(maxDistSq, x * x + y * y);
                 }
             }
