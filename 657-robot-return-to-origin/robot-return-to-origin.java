@@ -3,8 +3,7 @@ class Solution {
         int x = 0;
         int y = 0;
         
-        for (int i = 0; i < moves.length(); i++) {
-            char move = moves.charAt(i);
+        for (char move : moves.toCharArray()) {
             if (move == 'U') {
                 y++;
             } else if (move == 'D') {
