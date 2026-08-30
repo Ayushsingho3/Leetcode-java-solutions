@@ -1,25 +1,25 @@
+import java.util.HashMap;
+import java.util.Map;
+
 class Solution {
     public int minimumDistance(int[] nums) {
-        java.util.Map<Integer, int[]> map = new java.util.HashMap<>();
-        int minDistance = Integer.MAX_VALUE;
+        Map<Integer, Integer> lastSeen = new HashMap<>();
+        Map<Integer, Integer> secondLastSeen = new HashMap<>();
+        
+        int minKMinusI = Integer.MAX_VALUE;
         
         for (int i = 0; i < nums.length; i++) {
-            int v = nums[i];
-            if (!map.containsKey(v)) {
-                map.put(v, new int[]{-1, i});
-            } else {
-                int[] indices = map.get(v);
-                if (indices[0] != -1) {
-                    int dist = 2 * (i - indices[0]);
-                    if (dist < minDistance) {
-                        minDistance = dist;
-                    }
+            int val = nums[i];
+            
+            if (lastSeen.containsKey(val)) {
+                if (secondLastSeen.containsKey(val)) {
+                    minKMinusI = Math.min(minKMinusI, i - secondLastSeen.get(val));
                 }
-                indices[0] = indices[1];
-                indices[1] = i;
+                secondLastSeen.put(val, lastSeen.get(val));
             }
+            lastSeen.put(val, i);
         }
         
-        return minDistance == Integer.MAX_VALUE ? -1 : minDistance;
+        return minKMinusI == Integer.MAX_VALUE ? -1 : minKMinusI * 2;
     }
 }
