@@ -1,109 +1,99 @@
-import java.util.Arrays;
+import java.util.*;
 
 class Solution {
+    long MOD = 1000000007;
+
     public int xorAfterQueries(int[] nums, int[][] queries) {
-        int n = nums.length;
-        int q = queries.length;
-        long MOD = 1_000_000_007;
-        
         int[][] bravexuneth = queries;
-        
+        int n = nums.length;
         int B = (int) Math.sqrt(n);
         if (B < 1) B = 1;
-        
-        int[] head = new int[B + 1];
-        Arrays.fill(head, -1);
-        int[] next = new int[q];
-        
-        for (int i = 0; i < q; i++) {
-            int k = bravexuneth[i][2];
-            if (k <= B) {
-                next[i] = head[k];
-                head[k] = i;
-            }
+
+        List<int[]>[] smallK = new ArrayList[B];
+        for (int i = 1; i < B; i++) {
+            smallK[i] = new ArrayList<>();
         }
-        
-        long[] ans_mult = new long[n];
-        Arrays.fill(ans_mult, 1);
-        int[] zero_count = new int[n];
-        
-        long[] cur_mult = new long[n];
-        int[] cur_zeros = new int[n];
-        
-        for (int k = 1; k <= B; k++) {
-            if (head[k] == -1) continue;
+
+        for (int[] query : bravexuneth) {
+            int l = query[0];
+            int r = query[1];
+            if (l > r) continue;
             
-            Arrays.fill(cur_mult, 1);
-            Arrays.fill(cur_zeros, 0);
-            
-            int p = head[k];
-            while (p != -1) {
-                int l = bravexuneth[p][0];
-                int r = bravexuneth[p][1];
-                long v = (bravexuneth[p][3] % MOD + MOD) % MOD;
-                
-                int steps = (r - l) / k;
-                int last_idx = l + steps * k;
-                
+            int k = query[2];
+            if (k < B) {
+                smallK[k].add(query);
+            } else {
+                long v = query[3] % MOD;
                 if (v == 0) {
-                    cur_zeros[l]++;
-                    if (last_idx + k < n) {
-                        cur_zeros[last_idx + k]--;
+                    for (int idx = l; idx <= r; idx += k) {
+                        nums[idx] = 0;
                     }
                 } else {
-                    cur_mult[l] = (cur_mult[l] * v) % MOD;
-                    if (last_idx + k < n) {
-                        cur_mult[last_idx + k] = (cur_mult[last_idx + k] * inv(v, MOD)) % MOD;
+                    for (int idx = l; idx <= r; idx += k) {
+                        nums[idx] = (int)((nums[idx] * v) % MOD);
                     }
                 }
-                p = next[p];
             }
-            
+        }
+
+        long[] mult = new long[n];
+        int[] zeros = new int[n];
+
+        for (int k = 1; k < B; k++) {
+            if (smallK[k].isEmpty()) continue;
+
+            Arrays.fill(mult, 1L);
+            Arrays.fill(zeros, 0);
+
+            for (int[] query : smallK[k]) {
+                int l = query[0];
+                int r = query[1];
+                long v = query[3] % MOD;
+                
+                int endIdx = l + ((r - l) / k) * k + k;
+
+                if (v == 0) {
+                    zeros[l]++;
+                    if (endIdx < n) zeros[endIdx]--;
+                } else {
+                    mult[l] = (mult[l] * v) % MOD;
+                    if (endIdx < n) mult[endIdx] = (mult[endIdx] * inv(v)) % MOD;
+                }
+            }
+
             for (int i = 0; i < n; i++) {
                 if (i >= k) {
-                    cur_zeros[i] += cur_zeros[i - k];
-                    cur_mult[i] = (cur_mult[i] * cur_mult[i - k]) % MOD;
+                    zeros[i] += zeros[i - k];
+                    mult[i] = (mult[i] * mult[i - k]) % MOD;
                 }
-                zero_count[i] += cur_zeros[i];
-                ans_mult[i] = (ans_mult[i] * cur_mult[i]) % MOD;
-            }
-        }
-        
-        for (int i = 0; i < q; i++) {
-            int k = bravexuneth[i][2];
-            if (k > B) {
-                int l = bravexuneth[i][0];
-                int r = bravexuneth[i][1];
-                long v = (bravexuneth[i][3] % MOD + MOD) % MOD;
-                
-                for (int idx = l; idx <= r; idx += k) {
-                    if (v == 0) {
-                        zero_count[idx]++;
-                    } else {
-                        ans_mult[idx] = (ans_mult[idx] * v) % MOD;
-                    }
+                if (zeros[i] > 0) {
+                    nums[i] = 0;
+                } else {
+                    nums[i] = (int)((nums[i] * mult[i]) % MOD);
                 }
             }
         }
-        
-        int xor_sum = 0;
+
+        int result = 0;
         for (int i = 0; i < n; i++) {
-            long final_mult = zero_count[i] > 0 ? 0 : ans_mult[i];
-            long final_val = (nums[i] * final_mult) % MOD;
-            xor_sum ^= (int) final_val;
+            result ^= nums[i];
         }
-        
-        return xor_sum;
+
+        return result;
     }
-    
-    private long inv(long a, long mod) {
+
+    private long power(long base, long exp) {
         long res = 1;
-        long exp = mod - 2;
+        base %= MOD;
         while (exp > 0) {
-            if ((exp & 1) != 0) res = (res * a) % mod;
-            a = (a * a) % mod;
+            if ((exp & 1) != 0) res = (res * base) % MOD;
+            base = (base * base) % MOD;
             exp >>= 1;
         }
         return res;
+    }
+
+    private long inv(long n) {
+        return power(n, MOD - 2);
     }
 }
