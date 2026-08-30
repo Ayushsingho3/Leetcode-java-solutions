@@ -6,8 +6,7 @@ class Solution {
         for (int i = 0; i < n; i++) {
             if (words[i].equals(target)) {
                 int dist = Math.abs(i - startIndex);
-                int circularDist = n - dist;
-                minDistance = Math.min(minDistance, Math.min(dist, circularDist));
+                minDistance = Math.min(minDistance, Math.min(dist, n - dist));
             }
         }
         
