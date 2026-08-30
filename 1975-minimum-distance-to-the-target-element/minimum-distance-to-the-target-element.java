@@ -4,10 +4,7 @@ class Solution {
         
         for (int i = 0; i < nums.length; i++) {
             if (nums[i] == target) {
-                int diff = Math.abs(i - start);
-                if (diff < minDistance) {
-                    minDistance = diff;
-                }
+                minDistance = Math.min(minDistance, Math.abs(i - start));
             }
         }
         
