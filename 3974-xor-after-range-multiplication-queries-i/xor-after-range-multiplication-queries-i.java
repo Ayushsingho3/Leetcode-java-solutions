@@ -1,106 +1,90 @@
 import java.util.Arrays;
 
 class Solution {
+    int MOD = 1000000007;
+
     public int xorAfterQueries(int[] nums, int[][] queries) {
         int n = nums.length;
-        int q = queries.length;
-        long MOD = 1_000_000_007;
+        int B = Math.min(100, n + 1);
         
-        int B = (int) Math.sqrt(n);
-        if (B < 1) B = 1;
+        long[] mult = new long[n];
+        Arrays.fill(mult, 1L);
         
-        int[] head = new int[B + 1];
-        Arrays.fill(head, -1);
-        int[] next = new int[q];
-        
-        for (int i = 0; i < q; i++) {
-            int k = queries[i][2];
-            if (k <= B) {
-                next[i] = head[k];
-                head[k] = i;
-            }
+        int[][] pref = new int[B][n];
+        int[][] zero_pref = new int[B][n];
+        for(int i = 0; i < B; i++) {
+            Arrays.fill(pref[i], 1);
         }
         
-        long[] ans_mult = new long[n];
-        Arrays.fill(ans_mult, 1);
-        int[] zero_count = new int[n];
-        
-        long[] cur_mult = new long[n];
-        int[] cur_zeros = new int[n];
-        
-        for (int k = 1; k <= B; k++) {
-            if (head[k] == -1) continue;
+        for (int[] q : queries) {
+            int li = q[0], ri = q[1], ki = q[2];
+            long vi = (q[3] % MOD + MOD) % MOD;
             
-            Arrays.fill(cur_mult, 1);
-            Arrays.fill(cur_zeros, 0);
-            
-            int p = head[k];
-            while (p != -1) {
-                int l = queries[p][0];
-                int r = queries[p][1];
-                long v = (queries[p][3] % MOD + MOD) % MOD;
+            if (ki >= B) {
+                for (int idx = li; idx <= ri; idx += ki) {
+                    mult[idx] = (mult[idx] * vi) % MOD;
+                }
+            } else {
+                int count = (ri - li) / ki;
+                int next_idx = li + (count + 1) * ki;
                 
-                int steps = (r - l) / k;
-                int last_idx = l + steps * k;
-                
-                if (v == 0) {
-                    cur_zeros[l]++;
-                    if (last_idx + k < n) {
-                        cur_zeros[last_idx + k]--;
+                if (vi == 0) {
+                    zero_pref[ki][li] += 1;
+                    if (next_idx < n) {
+                        zero_pref[ki][next_idx] -= 1;
                     }
                 } else {
-                    cur_mult[l] = (cur_mult[l] * v) % MOD;
-                    if (last_idx + k < n) {
-                        cur_mult[last_idx + k] = (cur_mult[last_idx + k] * inv(v, MOD)) % MOD;
+                    pref[ki][li] = (int)((pref[ki][li] * vi) % MOD);
+                    if (next_idx < n) {
+                        pref[ki][next_idx] = (int)((pref[ki][next_idx] * inv(vi)) % MOD);
                     }
                 }
-                p = next[p];
+            }
+        }
+        
+        for (int k = 1; k < B; k++) {
+            for (int j = 0; j < n; j++) {
+                if (j >= k) {
+                    pref[k][j] = (int)(((long)pref[k][j] * pref[k][j - k]) % MOD);
+                    zero_pref[k][j] += zero_pref[k][j - k];
+                }
+            }
+        }
+        
+        int xorSum = 0;
+        for (int j = 0; j < n; j++) {
+            long finalMult = mult[j];
+            long zeros = 0;
+            
+            for (int k = 1; k < B; k++) {
+                finalMult = (finalMult * pref[k][j]) % MOD;
+                zeros += zero_pref[k][j];
             }
             
-            for (int i = 0; i < n; i++) {
-                if (i >= k) {
-                    cur_zeros[i] += cur_zeros[i - k];
-                    cur_mult[i] = (cur_mult[i] * cur_mult[i - k]) % MOD;
-                }
-                zero_count[i] += cur_zeros[i];
-                ans_mult[i] = (ans_mult[i] * cur_mult[i]) % MOD;
+            if (zeros > 0) {
+                finalMult = 0;
             }
+            
+            long newVal = (nums[j] * finalMult) % MOD;
+            xorSum ^= (int) newVal;
         }
         
-        for (int i = 0; i < q; i++) {
-            int k = queries[i][2];
-            if (k > B) {
-                int l = queries[i][0];
-                int r = queries[i][1];
-                long v = (queries[i][3] % MOD + MOD) % MOD;
-                
-                for (int idx = l; idx <= r; idx += k) {
-                    if (v == 0) {
-                        zero_count[idx]++;
-                    } else {
-                        ans_mult[idx] = (ans_mult[idx] * v) % MOD;
-                    }
-                }
-            }
-        }
-        
-        int xor_sum = 0;
-        for (int i = 0; i < n; i++) {
-            long final_mult = zero_count[i] > 0 ? 0 : ans_mult[i];
-            long final_val = (nums[i] * final_mult) % MOD;
-            xor_sum ^= (int) final_val;
-        }
-        
-        return xor_sum;
+        return xorSum;
     }
     
-    private long inv(long a, long mod) {
+    private long inv(long a) {
+        return power(a, MOD - 2);
+    }
+    
+    private long power(long a, long b) {
         long res = 1;
-        long exp = mod - 2;
-        while (exp > 0) {
-            if ((exp & 1) != 0) res = (res * a) % mod;
-            a = (a * a) % mod;
-            exp >>= 1;
+        a %= MOD;
+        while (b > 0) {
+            if ((b & 1) != 0) {
+                res = (res * a) % MOD;
+            }
+            a = (a * a) % MOD;
+            b >>= 1;
         }
         return res;
     }
