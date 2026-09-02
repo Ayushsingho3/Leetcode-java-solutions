@@ -1,45 +1,46 @@
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 class Solution {
     public int robotSim(int[] commands, int[][] obstacles) {
-        Set<Long> obstacleSet = new HashSet<>();
-        for (int[] obs : obstacles) {
-            long hash = (((long) obs[0]) << 32) | ((long) obs[1] & 0xFFFFFFFFL);
-            obstacleSet.add(hash);
+        Set<String> set = new HashSet<>();
+
+        for (int[] obstacle : obstacles) {
+            set.add(obstacle[0] + "," + obstacle[1]);
         }
-        
-        // Directions: North (0), East (1), South (2), West (3)
-        int[][] dirs = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
-        int d = 0;
-        
-        int x = 0;
-        int y = 0;
-        int maxDistSquared = 0;
-        
-        for (int cmd : commands) {
-            if (cmd == -1) {
-                d = (d + 1) % 4;
-            } else if (cmd == -2) {
-                d = (d + 3) % 4;
+
+        int x = 0, y = 0;
+        int dir = 0;
+        int maxDistance = 0;
+
+        int[][] directions = {
+            {0, 1},
+            {1, 0},
+            {0, -1},
+            {-1, 0}
+        };
+
+        for (int command : commands) {
+            if (command == -2) {
+                dir = (dir + 3) % 4;
+            } else if (command == -1) {
+                dir = (dir + 1) % 4;
             } else {
-                for (int i = 0; i < cmd; i++) {
-                    int nx = x + dirs[d][0];
-                    int ny = y + dirs[d][1];
-                    
-                    long nextHash = (((long) nx) << 32) | ((long) ny & 0xFFFFFFFFL);
-                    
-                    if (obstacleSet.contains(nextHash)) {
+                for (int step = 0; step < command; step++) {
+                    int nx = x + directions[dir][0];
+                    int ny = y + directions[dir][1];
+
+                    if (set.contains(nx + "," + ny)) {
                         break;
                     }
-                    
+
                     x = nx;
                     y = ny;
-                    maxDistSquared = Math.max(maxDistSquared, x * x + y * y);
+
+                    maxDistance = Math.max(maxDistance, x * x + y * y);
                 }
             }
         }
-        
-        return maxDistSquared;
+
+        return maxDistance;
     }
 }
