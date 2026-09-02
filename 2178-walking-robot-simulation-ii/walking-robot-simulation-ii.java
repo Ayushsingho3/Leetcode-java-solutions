@@ -1,54 +1,46 @@
 class Robot {
-    private int width;
-    private int height;
-    private int perimeter;
+    private int W;
+    private int H;
+    private int P;
     private int pos;
-    private boolean hasMoved;
+    private boolean moved;
 
     public Robot(int width, int height) {
-        this.width = width;
-        this.height = height;
-        this.perimeter = 2 * (width - 1) + 2 * (height - 1);
+        this.W = width;
+        this.H = height;
+        this.P = 2 * (W + H - 2); 
         this.pos = 0;
-        this.hasMoved = false;
+        this.moved = false;
     }
     
     public void step(int num) {
-        if (num > 0) {
-            hasMoved = true;
-        }
-        pos = (pos + num) % perimeter;
+        moved = true;
+        pos = (pos + num) % P; 
     }
     
     public int[] getPos() {
-        if (pos == 0) {
-            return new int[]{0, 0};
-        }
-        if (pos <= width - 1) {
+        if (pos < W) {
             return new int[]{pos, 0};
+        } else if (pos < W + H - 1) {
+            return new int[]{W - 1, pos - (W - 1)};
+        } else if (pos < 2 * W + H - 2) {
+            return new int[]{W - 1 - (pos - (W + H - 2)), H - 1};
+        } else {
+            return new int[]{0, H - 1 - (pos - (2 * W + H - 3))};
         }
-        if (pos <= (width - 1) + (height - 1)) {
-            return new int[]{width - 1, pos - (width - 1)};
-        }
-        if (pos <= 2 * (width - 1) + (height - 1)) {
-            return new int[]{(width - 1) - (pos - (width - 1 + height - 1)), height - 1};
-        }
-        return new int[]{0, (height - 1) - (pos - (2 * width + height - 3))};
     }
     
     public String getDir() {
         if (pos == 0) {
-            return hasMoved ? "South" : "East";
-        }
-        if (pos <= width - 1) {
+            return moved ? "South" : "East";
+        } else if (pos < W) {
             return "East";
-        }
-        if (pos <= (width - 1) + (height - 1)) {
+        } else if (pos < W + H - 1) {
             return "North";
-        }
-        if (pos <= 2 * (width - 1) + (height - 1)) {
+        } else if (pos < 2 * W + H - 2) {
             return "West";
+        } else {
+            return "South";
         }
-        return "South";
     }
 }
