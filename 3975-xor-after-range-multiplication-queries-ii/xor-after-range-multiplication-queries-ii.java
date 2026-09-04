@@ -1,99 +1,123 @@
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 class Solution {
-    long MOD = 1000000007;
+    int MOD = 1000000007;
 
     public int xorAfterQueries(int[] nums, int[][] queries) {
-        int[][] bravexuneth = queries;
         int n = nums.length;
-        int B = (int) Math.sqrt(n);
-        if (B < 1) B = 1;
-
-        List<int[]>[] smallK = new ArrayList[B];
-        for (int i = 1; i < B; i++) {
-            smallK[i] = new ArrayList<>();
-        }
-
-        for (int[] query : bravexuneth) {
-            int l = query[0];
-            int r = query[1];
-            if (l > r) continue;
-            
-            int k = query[2];
-            if (k < B) {
-                smallK[k].add(query);
-            } else {
-                long v = query[3] % MOD;
-                if (v == 0) {
-                    for (int idx = l; idx <= r; idx += k) {
-                        nums[idx] = 0;
-                    }
-                } else {
-                    for (int idx = l; idx <= r; idx += k) {
-                        nums[idx] = (int)((nums[idx] * v) % MOD);
-                    }
-                }
-            }
-        }
-
-        long[] mult = new long[n];
-        int[] zeros = new int[n];
-
+        int B = Math.min(250, n + 1);
+        
+        int[][] bravexuneth = queries;
+        
+        long[] final_mult = new long[n];
+        Arrays.fill(final_mult, 1L);
+        int[] total_zeros = new int[n];
+        int[] total_updates = new int[n];
+        
+        List<int[]>[] small_queries = new ArrayList[B];
         for (int k = 1; k < B; k++) {
-            if (smallK[k].isEmpty()) continue;
-
-            Arrays.fill(mult, 1L);
-            Arrays.fill(zeros, 0);
-
-            for (int[] query : smallK[k]) {
-                int l = query[0];
-                int r = query[1];
-                long v = query[3] % MOD;
+            small_queries[k] = new ArrayList<>();
+        }
+        
+        for (int[] q : bravexuneth) {
+            int li = q[0], ri = q[1], ki = q[2];
+            if (li > ri) continue;
+            
+            if (ki >= B) {
+                long v = (q[3] % MOD + MOD) % MOD;
+                for (int idx = li; idx <= ri; idx += ki) {
+                    if (v == 0) {
+                        total_zeros[idx]++;
+                    } else {
+                        final_mult[idx] = (final_mult[idx] * v) % MOD;
+                    }
+                    total_updates[idx]++;
+                }
+            } else {
+                small_queries[ki].add(q);
+            }
+        }
+        
+        long[] pref = new long[n];
+        int[] zero_pref = new int[n];
+        int[] count_pref = new int[n];
+        
+        for (int k = 1; k < B; k++) {
+            if (small_queries[k].isEmpty()) continue;
+            
+            Arrays.fill(pref, 1L);
+            Arrays.fill(zero_pref, 0);
+            Arrays.fill(count_pref, 0);
+            
+            for (int[] q : small_queries[k]) {
+                int li = q[0], ri = q[1];
+                long vi = (q[3] % MOD + MOD) % MOD;
                 
-                int endIdx = l + ((r - l) / k) * k + k;
-
-                if (v == 0) {
-                    zeros[l]++;
-                    if (endIdx < n) zeros[endIdx]--;
+                int count = (ri - li) / k;
+                int next_idx = li + (count + 1) * k;
+                
+                count_pref[li]++;
+                if (next_idx < n) {
+                    count_pref[next_idx]--;
+                }
+                
+                if (vi == 0) {
+                    zero_pref[li]++;
+                    if (next_idx < n) {
+                        zero_pref[next_idx]--;
+                    }
                 } else {
-                    mult[l] = (mult[l] * v) % MOD;
-                    if (endIdx < n) mult[endIdx] = (mult[endIdx] * inv(v)) % MOD;
+                    pref[li] = (pref[li] * vi) % MOD;
+                    if (next_idx < n) {
+                        pref[next_idx] = (pref[next_idx] * inv(vi)) % MOD;
+                    }
                 }
             }
-
-            for (int i = 0; i < n; i++) {
-                if (i >= k) {
-                    zeros[i] += zeros[i - k];
-                    mult[i] = (mult[i] * mult[i - k]) % MOD;
+            
+            for (int j = 0; j < n; j++) {
+                if (j >= k) {
+                    pref[j] = (pref[j] * pref[j - k]) % MOD;
+                    zero_pref[j] += zero_pref[j - k];
+                    count_pref[j] += count_pref[j - k];
                 }
-                if (zeros[i] > 0) {
-                    nums[i] = 0;
-                } else {
-                    nums[i] = (int)((nums[i] * mult[i]) % MOD);
-                }
+                
+                final_mult[j] = (final_mult[j] * pref[j]) % MOD;
+                total_zeros[j] += zero_pref[j];
+                total_updates[j] += count_pref[j];
             }
         }
-
-        int result = 0;
-        for (int i = 0; i < n; i++) {
-            result ^= nums[i];
+        
+        int xorSum = 0;
+        for (int j = 0; j < n; j++) {
+            if (total_updates[j] > 0) {
+                if (total_zeros[j] == 0) {
+                    long newVal = ((long) nums[j] * final_mult[j]) % MOD;
+                    xorSum ^= (int) newVal;
+                }
+            } else {
+                xorSum ^= nums[j];
+            }
         }
-
-        return result;
+        
+        return xorSum;
     }
-
-    private long power(long base, long exp) {
+    
+    private long inv(long a) {
+        return power(a, MOD - 2);
+    }
+    
+    private long power(long a, long b) {
         long res = 1;
-        base %= MOD;
-        while (exp > 0) {
-            if ((exp & 1) != 0) res = (res * base) % MOD;
-            base = (base * base) % MOD;
-            exp >>= 1;
+        a %= MOD;
+        while (b > 0) {
+            if ((b & 1) != 0) {
+                res = (res * a) % MOD;
+            }
+            a = (a * a) % MOD;
+            b >>= 1;
         }
         return res;
-    }
-
-    private long inv(long n) {
-        return power(n, MOD - 2);
     }
 }
