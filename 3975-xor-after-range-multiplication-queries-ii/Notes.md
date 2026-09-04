@@ -1,0 +1,1 @@
+<h2>xor-after-range-multiplication-queries-ii Notes</h2><hr>[ Time taken: 1d 0hrs 30m 50s ]
