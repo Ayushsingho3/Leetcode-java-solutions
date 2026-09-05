@@ -3,23 +3,23 @@ import java.util.Map;
 
 class Solution {
     public int minimumDistance(int[] nums) {
-        Map<Integer, Integer> lastSeen = new HashMap<>();
-        Map<Integer, Integer> secondLastSeen = new HashMap<>();
-        
-        int minKMinusI = Integer.MAX_VALUE;
-        
+        Map<Integer, int[]> map = new HashMap<>();
+        int minDistance = Integer.MAX_VALUE;
+
         for (int i = 0; i < nums.length; i++) {
             int val = nums[i];
-            
-            if (lastSeen.containsKey(val)) {
-                if (secondLastSeen.containsKey(val)) {
-                    minKMinusI = Math.min(minKMinusI, i - secondLastSeen.get(val));
+            if (!map.containsKey(val)) {
+                map.put(val, new int[]{-1, i});
+            } else {
+                int[] pos = map.get(val);
+                if (pos[0] != -1) {
+                    minDistance = Math.min(minDistance, 2 * (i - pos[0]));
                 }
-                secondLastSeen.put(val, lastSeen.get(val));
+                pos[0] = pos[1];
+                pos[1] = i;
             }
-            lastSeen.put(val, i);
         }
-        
-        return minKMinusI == Integer.MAX_VALUE ? -1 : minKMinusI * 2;
+
+        return minDistance == Integer.MAX_VALUE ? -1 : minDistance;
     }
 }
