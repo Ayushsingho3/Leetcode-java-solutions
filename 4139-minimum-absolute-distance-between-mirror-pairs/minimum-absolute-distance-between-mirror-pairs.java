@@ -3,32 +3,25 @@ import java.util.Map;
 
 class Solution {
     public int minMirrorPairDistance(int[] nums) {
-        Map<Integer, Integer> map = new HashMap<>();
-        int minDistance = Integer.MAX_VALUE;
-        
-        for (int i = 0; i < nums.length; i++) {
-            int current = nums[i];
-            
-            if (map.containsKey(current)) {
-                minDistance = Math.min(minDistance, i - map.get(current));
+        Map<Long, Integer> map = new HashMap<>();
+        int minDist = Integer.MAX_VALUE;
+
+        for (int j = 0; j < nums.length; j++) {
+            if (map.containsKey((long) nums[j])) {
+                minDist = Math.min(minDist, j - map.get((long) nums[j]));
             }
-            
-            int rev = reverse(nums[i]);
-            map.put(rev, i);
+            map.put(reverse(nums[j]), j);
         }
-        
-        return minDistance == Integer.MAX_VALUE ? -1 : minDistance;
+
+        return minDist == Integer.MAX_VALUE ? -1 : minDist;
     }
-    
-    private int reverse(int x) {
-        int rev = 0;
-        int temp = Math.abs(x);
-        
-        while (temp > 0) {
-            rev = rev * 10 + temp % 10;
-            temp /= 10;
+
+    private long reverse(int n) {
+        long rev = 0;
+        while (n > 0) {
+            rev = rev * 10 + n % 10;
+            n /= 10;
         }
-        
-        return x < 0 ? -rev : rev;
+        return rev;
     }
 }
