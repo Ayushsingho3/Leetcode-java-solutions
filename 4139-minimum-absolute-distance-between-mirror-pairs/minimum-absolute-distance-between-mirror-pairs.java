@@ -3,24 +3,26 @@ import java.util.Map;
 
 class Solution {
     public int minMirrorPairDistance(int[] nums) {
-        Map<Long, Integer> map = new HashMap<>();
+        Map<Integer, Integer> lastSeen = new HashMap<>();
         int minDist = Integer.MAX_VALUE;
 
         for (int j = 0; j < nums.length; j++) {
-            if (map.containsKey((long) nums[j])) {
-                minDist = Math.min(minDist, j - map.get((long) nums[j]));
+            if (lastSeen.containsKey(nums[j])) {
+                minDist = Math.min(minDist, j - lastSeen.get(nums[j]));
             }
-            map.put(reverse(nums[j]), j);
+            
+            int rev = reverse(nums[j]);
+            lastSeen.put(rev, j);
         }
 
         return minDist == Integer.MAX_VALUE ? -1 : minDist;
     }
 
-    private long reverse(int n) {
-        long rev = 0;
-        while (n > 0) {
-            rev = rev * 10 + n % 10;
-            n /= 10;
+    private int reverse(int x) {
+        int rev = 0;
+        while (x > 0) {
+            rev = rev * 10 + (x % 10);
+            x /= 10;
         }
         return rev;
     }
