@@ -6,36 +6,37 @@ import java.util.Map;
 class Solution {
     public List<Integer> solveQueries(int[] nums, int[] queries) {
         int n = nums.length;
+        int[] minDistForIndex = new int[n];
+
         Map<Integer, List<Integer>> map = new HashMap<>();
         for (int i = 0; i < n; i++) {
             map.computeIfAbsent(nums[i], k -> new ArrayList<>()).add(i);
         }
 
-        int[] res = new int[n];
         for (List<Integer> list : map.values()) {
-            int sz = list.size();
-            if (sz == 1) {
-                res[list.get(0)] = -1;
+            int k = list.size();
+            if (k == 1) {
+                minDistForIndex[list.get(0)] = -1;
             } else {
-                for (int p = 0; p < sz; p++) {
+                for (int p = 0; p < k; p++) {
                     int curr = list.get(p);
-                    int prev = list.get((p - 1 + sz) % sz);
-                    int next = list.get((p + 1) % sz);
+                    int prev = list.get((p - 1 + k) % k);
+                    int next = list.get((p + 1) % k);
 
-                    int d1 = Math.abs(curr - prev);
-                    d1 = Math.min(d1, n - d1);
+                    int distPrev = Math.abs(curr - prev);
+                    distPrev = Math.min(distPrev, n - distPrev);
 
-                    int d2 = Math.abs(curr - next);
-                    d2 = Math.min(d2, n - d2);
+                    int distNext = Math.abs(curr - next);
+                    distNext = Math.min(distNext, n - distNext);
 
-                    res[curr] = Math.min(d1, d2);
+                    minDistForIndex[curr] = Math.min(distPrev, distNext);
                 }
             }
         }
 
-        List<Integer> ans = new ArrayList<>();
+        List<Integer> ans = new ArrayList<>(queries.length);
         for (int q : queries) {
-            ans.add(res[q]);
+            ans.add(minDistForIndex[q]);
         }
 
         return ans;
