@@ -1,4 +1,3 @@
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -8,35 +7,33 @@ class Solution {
         Collections.sort(robot);
         Arrays.sort(factory, (a, b) -> Integer.compare(a[0], b[0]));
 
-        List<Integer> slots = new ArrayList<>();
-        for (int[] f : factory) {
-            int pos = f[0];
-            int limit = Math.min(f[1], robot.size());
-            for (int i = 0; i < limit; i++) {
-                slots.add(pos);
-            }
+        int m = robot.size();
+        int n = factory.length;
+
+        long[][] dp = new long[m + 1][n + 1];
+        long INF = (long) 1e16;
+
+        for (int i = 1; i <= m; i++) {
+            Arrays.fill(dp[i], INF);
         }
 
-        int n = robot.size();
-        int m = slots.size();
+        for (int j = 1; j <= n; j++) {
+            int pos = factory[j - 1][0];
+            int limit = factory[j - 1][1];
 
-        long[][] dp = new long[n + 1][m + 1];
-        long INF = 1000000000000000L;
-
-        for (int i = 1; i <= n; i++) {
-            dp[i][0] = INF;
-        }
-
-        for (int i = 1; i <= n; i++) {
-            for (int j = 1; j <= m; j++) {
+            for (int i = 0; i <= m; i++) {
                 dp[i][j] = dp[i][j - 1];
-                long cost = dp[i - 1][j - 1] + Math.abs((long) robot.get(i - 1) - slots.get(j - 1));
-                if (cost < dp[i][j]) {
-                    dp[i][j] = cost;
+                long distSum = 0;
+
+                for (int k = 1; k <= Math.min(i, limit); k++) {
+                    distSum += Math.abs((long) robot.get(i - k) - pos);
+                    if (dp[i - k][j - 1] != INF) {
+                        dp[i][j] = Math.min(dp[i][j], dp[i - k][j - 1] + distSum);
+                    }
                 }
             }
         }
 
-        return dp[n][m];
+        return dp[m][n];
     }
 }
