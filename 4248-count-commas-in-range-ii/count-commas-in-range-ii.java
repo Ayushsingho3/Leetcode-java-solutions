@@ -1,0 +1,9 @@
+class Solution {
+    public long countCommas(long n) {
+        long ans = 0;
+        for (long base = 1000; base <= n; base *= 1000) {
+            ans += n - base + 1;
+        }
+        return ans;
+    }
+}
