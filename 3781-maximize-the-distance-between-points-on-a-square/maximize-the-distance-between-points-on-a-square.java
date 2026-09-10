@@ -3,38 +3,21 @@ import java.util.Arrays;
 class Solution {
     public int maxDistance(int side, int[][] points, int k) {
         int n = points.length;
-        long L = 4L * side;
-        long[] pos = new long[n];
 
-        for (int i = 0; i < n; i++) {
-            int x = points[i][0];
-            int y = points[i][1];
-            if (y == 0) {
-                pos[i] = x;
-            } else if (x == side) {
-                pos[i] = (long) side + y;
-            } else if (y == side) {
-                pos[i] = 3L * side - x;
-            } else {
-                pos[i] = 4L * side - y;
-            }
+        Arrays.sort(points, (a, b) -> Long.compare(getPerimeter(a[0], a[1], side), getPerimeter(b[0], b[1], side)));
+
+        int LOG = 0;
+        while ((1 << LOG) <= k) {
+            LOG++;
         }
 
-        Arrays.sort(pos);
-
-        long[] d = new long[2 * n];
-        for (int i = 0; i < n; i++) {
-            d[i] = pos[i];
-            d[i + n] = pos[i] + L;
-        }
-
-        long low = 1;
-        long high = 2L * side;
-        long ans = 0;
+        int low = 1;
+        int high = 2 * side;
+        int ans = 0;
 
         while (low <= high) {
-            long mid = low + (high - low) / 2;
-            if (check(mid, d, n, k, L)) {
+            int mid = low + (high - low) / 2;
+            if (isValid(mid, k, n, points, side, LOG)) {
                 ans = mid;
                 low = mid + 1;
             } else {
@@ -42,44 +25,71 @@ class Solution {
             }
         }
 
-        return (int) ans;
+        return ans;
     }
 
-    private boolean check(long D, long[] d, int n, int k, long L) {
-        int[] nxt = new int[2 * n];
-        int r = 0;
-        for (int l = 0; l < 2 * n; l++) {
-            while (r < 2 * n && d[r] - d[l] < D) {
-                r++;
+    private boolean isValid(int D, int k, int n, int[][] points, int side, int LOG) {
+        int maxBound = 3 * n;
+        int[] nextIdx = new int[maxBound + 1];
+        int[][] up = new int[LOG][maxBound + 1];
+
+        int j = 0;
+        for (int i = 0; i < 2 * n; i++) {
+            j = Math.max(j, i + 1);
+            while (j < i + n && dist(points[i % n], points[j % n]) < D) {
+                j++;
             }
-            nxt[l] = r;
-        }
-
-        int LOG = 32 - Integer.numberOfLeadingZeros(k);
-        int[][] up = new int[LOG][2 * n + 1];
-        for (int l = 0; l <= 2 * n; l++) {
-            up[0][l] = (l < 2 * n) ? nxt[l] : 2 * n;
-        }
-
-        for (int p = 1; p < LOG; p++) {
-            for (int l = 0; l <= 2 * n; l++) {
-                up[p][l] = up[p - 1][up[p - 1][l]];
+            if (j < i + n) {
+                nextIdx[i] = j;
+            } else {
+                nextIdx[i] = maxBound;
             }
         }
 
-        int steps = k - 1;
+        for (int i = 2 * n; i <= maxBound; i++) {
+            nextIdx[i] = maxBound;
+        }
+
+        for (int i = 0; i <= maxBound; i++) {
+            up[0][i] = nextIdx[i];
+        }
+
+        for (int s = 1; s < LOG; s++) {
+            for (int i = 0; i <= maxBound; i++) {
+                up[s][i] = up[s - 1][up[s - 1][i]];
+            }
+        }
+
+        int rem = k - 1;
         for (int i = 0; i < n; i++) {
             int curr = i;
-            for (int p = 0; p < LOG; p++) {
-                if (((steps >> p) & 1) == 1) {
-                    curr = up[p][curr];
+            for (int s = LOG - 1; s >= 0; s--) {
+                if (((rem >> s) & 1) == 1) {
+                    curr = up[s][curr];
                 }
             }
-            if (curr < 2 * n && d[i] + L - d[curr] >= D) {
+
+            if (curr < i + n && dist(points[i], points[curr % n]) >= D) {
                 return true;
             }
         }
 
         return false;
+    }
+
+    private int dist(int[] p1, int[] p2) {
+        return Math.abs(p1[0] - p2[0]) + Math.abs(p1[1] - p2[1]);
+    }
+
+    private long getPerimeter(long x, long y, long side) {
+        if (y == 0) {
+            return x;
+        } else if (x == side) {
+            return side + y;
+        } else if (y == side) {
+            return 3 * side - x;
+        } else {
+            return 4 * side - y;
+        }
     }
 }
