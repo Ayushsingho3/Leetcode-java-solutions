@@ -4,33 +4,28 @@ import java.util.Map;
 class Solution {
     public int minimumHammingDistance(int[] source, int[] target, int[][] allowedSwaps) {
         int n = source.length;
-        int[] parent = new int[n];
-        for (int i = 0; i < n; i++) {
-            parent[i] = i;
-        }
+        DSU dsu = new DSU(n);
 
         for (int[] swap : allowedSwaps) {
-            int rootA = find(parent, swap[0]);
-            int rootB = find(parent, swap[1]);
-            if (rootA != rootB) {
-                parent[rootA] = rootB;
-            }
+            dsu.union(swap[0], swap[1]);
         }
 
-        Map<Integer, Map<Integer, Integer>> componentMap = new HashMap<>();
+        Map<Integer, Map<Integer, Integer>> componentCounts = new HashMap<>();
         for (int i = 0; i < n; i++) {
-            int root = find(parent, i);
-            componentMap.computeIfAbsent(root, k -> new HashMap<>())
-                        .put(source[i], componentMap.get(root).getOrDefault(source[i], 0) + 1);
+            int root = dsu.find(i);
+            componentCounts
+                .computeIfAbsent(root, k -> new HashMap<>())
+                .put(source[i], componentCounts.get(root).getOrDefault(source[i], 0) + 1);
         }
 
         int hammingDistance = 0;
         for (int i = 0; i < n; i++) {
-            int root = find(parent, i);
-            Map<Integer, Integer> countMap = componentMap.get(root);
-            int count = countMap.getOrDefault(target[i], 0);
+            int root = dsu.find(i);
+            Map<Integer, Integer> counts = componentCounts.get(root);
+            int count = counts.getOrDefault(target[i], 0);
+
             if (count > 0) {
-                countMap.put(target[i], count - 1);
+                counts.put(target[i], count - 1);
             } else {
                 hammingDistance++;
             }
@@ -39,10 +34,29 @@ class Solution {
         return hammingDistance;
     }
 
-    private int find(int[] parent, int i) {
-        if (parent[i] == i) {
-            return i;
+    private static class DSU {
+        private final int[] parent;
+
+        public DSU(int n) {
+            parent = new int[n];
+            for (int i = 0; i < n; i++) {
+                parent[i] = i;
+            }
         }
-        return parent[i] = find(parent, parent[i]);
+
+        public int find(int i) {
+            if (parent[i] == i) {
+                return i;
+            }
+            return parent[i] = find(parent[i]);
+        }
+
+        public void union(int i, int j) {
+            int rootI = find(i);
+            int rootJ = find(j);
+            if (rootI != rootJ) {
+                parent[rootI] = rootJ;
+            }
+        }
     }
 }
