@@ -4,35 +4,33 @@ import java.util.List;
 import java.util.Map;
 
 class Solution {
-    public long[] distance(int[] nums) {
-        int n = nums.length;
-        long[] arr = new long[n];
+    public long[] distance(int[] arr) {
+        int n = arr.length;
+        long[] result = new long[n];
         Map<Integer, List<Integer>> map = new HashMap<>();
 
         for (int i = 0; i < n; i++) {
-            map.computeIfAbsent(nums[i], k -> new ArrayList<>()).add(i);
+            map.computeIfAbsent(arr[i], k -> new ArrayList<>()).add(i);
         }
 
         for (List<Integer> list : map.values()) {
             int k = list.size();
-            long rightSum = 0;
+            long totalSum = 0;
             for (int idx : list) {
-                rightSum += idx;
+                totalSum += idx;
             }
 
-            long leftSum = 0;
-            for (int p = 0; p < k; p++) {
-                long idx = list.get(p);
-                rightSum -= idx;
-                long rightCount = k - 1 - p;
-                long leftCount = p;
+            long prefixSum = 0;
+            for (int i = 0; i < k; i++) {
+                long curr = list.get(i);
+                long left = (long) i * curr - prefixSum;
+                long right = (totalSum - prefixSum - curr) - (long) (k - 1 - i) * curr;
 
-                arr[(int) idx] = (leftCount * idx - leftSum) + (rightSum - rightCount * idx);
-
-                leftSum += idx;
+                result[(int) curr] = left + right;
+                prefixSum += curr;
             }
         }
 
-        return arr;
+        return result;
     }
 }
