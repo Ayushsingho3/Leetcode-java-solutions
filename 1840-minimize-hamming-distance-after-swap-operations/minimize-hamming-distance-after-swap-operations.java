@@ -10,22 +10,22 @@ class Solution {
             dsu.union(swap[0], swap[1]);
         }
 
-        Map<Integer, Map<Integer, Integer>> componentCounts = new HashMap<>();
+        Map<Integer, Map<Integer, Integer>> componentMaps = new HashMap<>();
         for (int i = 0; i < n; i++) {
             int root = dsu.find(i);
-            componentCounts
-                .computeIfAbsent(root, k -> new HashMap<>())
-                .put(source[i], componentCounts.get(root).getOrDefault(source[i], 0) + 1);
+            componentMaps.putIfAbsent(root, new HashMap<>());
+            Map<Integer, Integer> countMap = componentMaps.get(root);
+            countMap.put(source[i], countMap.getOrDefault(source[i], 0) + 1);
         }
 
         int hammingDistance = 0;
         for (int i = 0; i < n; i++) {
             int root = dsu.find(i);
-            Map<Integer, Integer> counts = componentCounts.get(root);
-            int count = counts.getOrDefault(target[i], 0);
+            Map<Integer, Integer> countMap = componentMaps.get(root);
+            int val = target[i];
 
-            if (count > 0) {
-                counts.put(target[i], count - 1);
+            if (countMap.containsKey(val) && countMap.get(val) > 0) {
+                countMap.put(val, countMap.get(val) - 1);
             } else {
                 hammingDistance++;
             }
@@ -37,9 +37,9 @@ class Solution {
     private static class DSU {
         private final int[] parent;
 
-        public DSU(int n) {
-            parent = new int[n];
-            for (int i = 0; i < n; i++) {
+        public DSU(int size) {
+            parent = new int[size];
+            for (int i = 0; i < size; i++) {
                 parent[i] = i;
             }
         }
