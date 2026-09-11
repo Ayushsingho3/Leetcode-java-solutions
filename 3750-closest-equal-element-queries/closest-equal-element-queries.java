@@ -6,39 +6,37 @@ import java.util.Map;
 class Solution {
     public List<Integer> solveQueries(int[] nums, int[] queries) {
         int n = nums.length;
-        int[] minDistForIndex = new int[n];
-
         Map<Integer, List<Integer>> map = new HashMap<>();
+        int[] posInList = new int[n];
+
         for (int i = 0; i < n; i++) {
-            map.computeIfAbsent(nums[i], k -> new ArrayList<>()).add(i);
+            List<Integer> list = map.computeIfAbsent(nums[i], k -> new ArrayList<>());
+            posInList[i] = list.size();
+            list.add(i);
         }
 
-        for (List<Integer> list : map.values()) {
-            int k = list.size();
-            if (k == 1) {
-                minDistForIndex[list.get(0)] = -1;
+        List<Integer> answer = new ArrayList<>(queries.length);
+        for (int q : queries) {
+            List<Integer> list = map.get(nums[q]);
+            int sz = list.size();
+
+            if (sz <= 1) {
+                answer.add(-1);
             } else {
-                for (int p = 0; p < k; p++) {
-                    int curr = list.get(p);
-                    int prev = list.get((p - 1 + k) % k);
-                    int next = list.get((p + 1) % k);
+                int pos = posInList[q];
+                int prevIdx = list.get((pos - 1 + sz) % sz);
+                int nextIdx = list.get((pos + 1) % sz);
 
-                    int distPrev = Math.abs(curr - prev);
-                    distPrev = Math.min(distPrev, n - distPrev);
+                int distPrev = Math.abs(q - prevIdx);
+                distPrev = Math.min(distPrev, n - distPrev);
 
-                    int distNext = Math.abs(curr - next);
-                    distNext = Math.min(distNext, n - distNext);
+                int distNext = Math.abs(q - nextIdx);
+                distNext = Math.min(distNext, n - distNext);
 
-                    minDistForIndex[curr] = Math.min(distPrev, distNext);
-                }
+                answer.add(Math.min(distPrev, distNext));
             }
         }
 
-        List<Integer> ans = new ArrayList<>(queries.length);
-        for (int q : queries) {
-            ans.add(minDistForIndex[q]);
-        }
-
-        return ans;
+        return answer;
     }
 }
