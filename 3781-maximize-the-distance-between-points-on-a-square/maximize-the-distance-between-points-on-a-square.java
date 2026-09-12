@@ -2,22 +2,32 @@ import java.util.Arrays;
 
 class Solution {
     public int maxDistance(int side, int[][] points, int k) {
-        int n = points.length;
-
-        Arrays.sort(points, (a, b) -> Long.compare(getPerimeter(a[0], a[1], side), getPerimeter(b[0], b[1], side)));
-
-        int LOG = 0;
-        while ((1 << LOG) <= k) {
-            LOG++;
+        if (k == 1) {
+            return 2 * side;
         }
 
-        int low = 1;
+        int n = points.length;
+        Point[] pts = new Point[n];
+        for (int i = 0; i < n; i++) {
+            long pos = getPerimeterPos(points[i][0], points[i][1], side);
+            pts[i] = new Point(points[i][0], points[i][1], pos);
+        }
+
+        Arrays.sort(pts, (a, b) -> Long.compare(a.pos, b.pos));
+
+        Point[] ext = new Point[2 * n];
+        for (int i = 0; i < n; i++) {
+            ext[i] = pts[i];
+            ext[i + n] = pts[i];
+        }
+
+        int low = 0;
         int high = 2 * side;
         int ans = 0;
 
         while (low <= high) {
             int mid = low + (high - low) / 2;
-            if (isValid(mid, k, n, points, side, LOG)) {
+            if (canDo(mid, ext, n, k)) {
                 ans = mid;
                 low = mid + 1;
             } else {
@@ -28,48 +38,47 @@ class Solution {
         return ans;
     }
 
-    private boolean isValid(int D, int k, int n, int[][] points, int side, int LOG) {
-        int maxBound = 3 * n;
-        int[] nextIdx = new int[maxBound + 1];
-        int[][] up = new int[LOG][maxBound + 1];
-
+    private boolean canDo(int D, Point[] ext, int n, int k) {
+        int size = 2 * n;
+        int[] next = new int[size + 1];
         int j = 0;
-        for (int i = 0; i < 2 * n; i++) {
-            j = Math.max(j, i + 1);
-            while (j < i + n && dist(points[i % n], points[j % n]) < D) {
+
+        for (int i = 0; i < size; i++) {
+            if (j < i + 1) {
+                j = i + 1;
+            }
+            while (j < i + n && j < size && dist(ext[i], ext[j]) < D) {
                 j++;
             }
-            if (j < i + n) {
-                nextIdx[i] = j;
+            if (j < i + n && j < size) {
+                next[i] = j;
             } else {
-                nextIdx[i] = maxBound;
+                next[i] = size;
+            }
+        }
+        next[size] = size;
+
+        int LOG = 32 - Integer.numberOfLeadingZeros(k);
+        int[][] up = new int[LOG][size + 1];
+
+        for (int i = 0; i <= size; i++) {
+            up[0][i] = next[i];
+        }
+
+        for (int l = 1; l < LOG; l++) {
+            for (int i = 0; i <= size; i++) {
+                up[l][i] = up[l - 1][up[l - 1][i]];
             }
         }
 
-        for (int i = 2 * n; i <= maxBound; i++) {
-            nextIdx[i] = maxBound;
-        }
-
-        for (int i = 0; i <= maxBound; i++) {
-            up[0][i] = nextIdx[i];
-        }
-
-        for (int s = 1; s < LOG; s++) {
-            for (int i = 0; i <= maxBound; i++) {
-                up[s][i] = up[s - 1][up[s - 1][i]];
-            }
-        }
-
-        int rem = k - 1;
         for (int i = 0; i < n; i++) {
             int curr = i;
-            for (int s = LOG - 1; s >= 0; s--) {
-                if (((rem >> s) & 1) == 1) {
-                    curr = up[s][curr];
+            for (int l = 0; l < LOG; l++) {
+                if (((k >> l) & 1) == 1) {
+                    curr = up[l][curr];
                 }
             }
-
-            if (curr < i + n && dist(points[i], points[curr % n]) >= D) {
+            if (curr <= i + n) {
                 return true;
             }
         }
@@ -77,11 +86,7 @@ class Solution {
         return false;
     }
 
-    private int dist(int[] p1, int[] p2) {
-        return Math.abs(p1[0] - p2[0]) + Math.abs(p1[1] - p2[1]);
-    }
-
-    private long getPerimeter(long x, long y, long side) {
+    private long getPerimeterPos(int x, int y, long side) {
         if (y == 0) {
             return x;
         } else if (x == side) {
@@ -90,6 +95,21 @@ class Solution {
             return 3 * side - x;
         } else {
             return 4 * side - y;
+        }
+    }
+
+    private int dist(Point p1, Point p2) {
+        return Math.abs(p1.x - p2.x) + Math.abs(p1.y - p2.y);
+    }
+
+    private static class Point {
+        int x, y;
+        long pos;
+
+        Point(int x, int y, long pos) {
+            this.x = x;
+            this.y = y;
+            this.pos = pos;
         }
     }
 }
