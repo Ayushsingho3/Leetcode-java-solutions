@@ -2,25 +2,26 @@ class Solution {
     public boolean containsCycle(char[][] grid) {
         int m = grid.length;
         int n = grid[0].length;
-
         DSU dsu = new DSU(m * n);
 
         for (int r = 0; r < m; r++) {
             for (int c = 0; c < n; c++) {
-                int u = r * n + c;
+                int curr = r * n + c;
 
                 if (c + 1 < n && grid[r][c] == grid[r][c + 1]) {
-                    int v = r * n + (c + 1);
-                    if (!dsu.union(u, v)) {
+                    int right = r * n + (c + 1);
+                    if (dsu.find(curr) == dsu.find(right)) {
                         return true;
                     }
+                    dsu.union(curr, right);
                 }
 
                 if (r + 1 < m && grid[r][c] == grid[r + 1][c]) {
-                    int v = (r + 1) * n + c;
-                    if (!dsu.union(u, v)) {
+                    int down = (r + 1) * n + c;
+                    if (dsu.find(curr) == dsu.find(down)) {
                         return true;
                     }
+                    dsu.union(curr, down);
                 }
             }
         }
@@ -45,14 +46,12 @@ class Solution {
             return parent[i] = find(parent[i]);
         }
 
-        public boolean union(int i, int j) {
+        public void union(int i, int j) {
             int rootI = find(i);
             int rootJ = find(j);
-            if (rootI == rootJ) {
-                return false;
+            if (rootI != rootJ) {
+                parent[rootI] = rootJ;
             }
-            parent[rootI] = rootJ;
-            return true;
         }
     }
 }
