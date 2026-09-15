@@ -58,7 +58,12 @@ class Solution {
         }
         next[size] = size;
 
-        int LOG = 32 - Integer.numberOfLeadingZeros(k);
+        int steps = k - 1;
+        int LOG = 32 - Integer.numberOfLeadingZeros(steps);
+        if (LOG == 0) {
+            LOG = 1;
+        }
+
         int[][] up = new int[LOG][size + 1];
 
         for (int i = 0; i <= size; i++) {
@@ -74,11 +79,11 @@ class Solution {
         for (int i = 0; i < n; i++) {
             int curr = i;
             for (int l = 0; l < LOG; l++) {
-                if (((k >> l) & 1) == 1) {
+                if (((steps >> l) & 1) == 1) {
                     curr = up[l][curr];
                 }
             }
-            if (curr <= i + n) {
+            if (curr < i + n && dist(ext[i], ext[curr]) >= D) {
                 return true;
             }
         }
