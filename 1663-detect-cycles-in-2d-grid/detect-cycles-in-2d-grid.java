@@ -1,57 +1,44 @@
 class Solution {
+    private static final int[][] DIRS = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+
     public boolean containsCycle(char[][] grid) {
         int m = grid.length;
         int n = grid[0].length;
-        DSU dsu = new DSU(m * n);
+        boolean[][] visited = new boolean[m][n];
 
         for (int r = 0; r < m; r++) {
             for (int c = 0; c < n; c++) {
-                int curr = r * n + c;
-
-                if (c + 1 < n && grid[r][c] == grid[r][c + 1]) {
-                    int right = r * n + (c + 1);
-                    if (dsu.find(curr) == dsu.find(right)) {
+                if (!visited[r][c]) {
+                    if (dfs(grid, visited, r, c, -1, -1, grid[r][c])) {
                         return true;
                     }
-                    dsu.union(curr, right);
-                }
-
-                if (r + 1 < m && grid[r][c] == grid[r + 1][c]) {
-                    int down = (r + 1) * n + c;
-                    if (dsu.find(curr) == dsu.find(down)) {
-                        return true;
-                    }
-                    dsu.union(curr, down);
                 }
             }
         }
-
         return false;
     }
 
-    private static class DSU {
-        private final int[] parent;
+    private boolean dfs(char[][] grid, boolean[][] visited, int r, int c, int pr, int pc, char target) {
+        visited[r][c] = true;
+        int m = grid.length;
+        int n = grid[0].length;
 
-        public DSU(int size) {
-            parent = new int[size];
-            for (int i = 0; i < size; i++) {
-                parent[i] = i;
+        for (int[] d : DIRS) {
+            int nr = r + d[0];
+            int nc = c + d[1];
+
+            if (nr >= 0 && nr < m && nc >= 0 && nc < n && grid[nr][nc] == target) {
+                if (nr == pr && nc == pc) {
+                    continue;
+                }
+                if (visited[nr][nc]) {
+                    return true;
+                }
+                if (dfs(grid, visited, nr, nc, r, c, target)) {
+                    return true;
+                }
             }
         }
-
-        public int find(int i) {
-            if (parent[i] == i) {
-                return i;
-            }
-            return parent[i] = find(parent[i]);
-        }
-
-        public void union(int i, int j) {
-            int rootI = find(i);
-            int rootJ = find(j);
-            if (rootI != rootJ) {
-                parent[rootI] = rootJ;
-            }
-        }
+        return false;
     }
 }
