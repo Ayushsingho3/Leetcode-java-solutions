@@ -2,12 +2,9 @@ import java.util.Arrays;
 
 class Solution {
     public int maxDistance(int side, int[][] points, int k) {
-        if (k == 1) {
-            return 2 * side;
-        }
-
         int n = points.length;
         Point[] pts = new Point[n];
+
         for (int i = 0; i < n; i++) {
             long pos = getPerimeterPos(points[i][0], points[i][1], side);
             pts[i] = new Point(points[i][0], points[i][1], pos);
@@ -18,12 +15,12 @@ class Solution {
         Point[] ext = new Point[2 * n];
         for (int i = 0; i < n; i++) {
             ext[i] = pts[i];
-            ext[i + n] = pts[i];
+            ext[i + n] = new Point(pts[i].x, pts[i].y, pts[i].pos + 4L * side);
         }
 
-        int low = 0;
+        int low = 1;
         int high = 2 * side;
-        int ans = 0;
+        int ans = 1;
 
         while (low <= high) {
             int mid = low + (high - low) / 2;
@@ -47,14 +44,10 @@ class Solution {
             if (j < i + 1) {
                 j = i + 1;
             }
-            while (j < i + n && j < size && dist(ext[i], ext[j]) < D) {
+            while (j < size && ext[j].pos - ext[i].pos < D) {
                 j++;
             }
-            if (j < i + n && j < size) {
-                next[i] = j;
-            } else {
-                next[i] = size;
-            }
+            next[i] = j;
         }
         next[size] = size;
 
@@ -83,7 +76,10 @@ class Solution {
                     curr = up[l][curr];
                 }
             }
-            if (curr < i + n && dist(ext[i], ext[curr]) >= D) {
+            if (curr < size && ext[curr].pos - ext[i].pos <= 4L * ext[0].pos / 2 + 4L * (ext[i].pos < 4L ? 0 : 0) /* boundary limit */ && ext[i + n].pos - ext[curr].pos >= D) {
+                return true;
+            }
+            if (curr < i + n && ext[i + n].pos - ext[curr].pos >= D) {
                 return true;
             }
         }
@@ -101,10 +97,6 @@ class Solution {
         } else {
             return 4 * side - y;
         }
-    }
-
-    private int dist(Point p1, Point p2) {
-        return Math.abs(p1.x - p2.x) + Math.abs(p1.y - p2.y);
     }
 
     private static class Point {
