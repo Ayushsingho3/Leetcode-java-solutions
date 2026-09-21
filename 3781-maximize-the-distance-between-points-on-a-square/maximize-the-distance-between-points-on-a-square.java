@@ -1,112 +1,109 @@
-import java.util.Arrays;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Deque;
+import java.util.List;
 
 class Solution {
+    private static class Sequence {
+        int startX, startY;
+        int endX, endY;
+        int length;
+
+        Sequence(int startX, int startY, int endX, int endY, int length) {
+            this.startX = startX;
+            this.startY = startY;
+            this.endX = endX;
+            this.endY = endY;
+            this.length = length;
+        }
+    }
+
     public int maxDistance(int side, int[][] points, int k) {
-        int n = points.length;
-        Point[] pts = new Point[n];
+        List<int[]> ordered = getOrderedPoints(side, points);
 
-        for (int i = 0; i < n; i++) {
-            long pos = getPerimeterPos(points[i][0], points[i][1], side);
-            pts[i] = new Point(points[i][0], points[i][1], pos);
-        }
+        int l = 0;
+        int r = (int) Math.min(2L * side, Integer.MAX_VALUE);
+        int ans = 0;
 
-        Arrays.sort(pts, (a, b) -> Long.compare(a.pos, b.pos));
-
-        Point[] ext = new Point[2 * n];
-        for (int i = 0; i < n; i++) {
-            ext[i] = pts[i];
-            ext[i + n] = new Point(pts[i].x, pts[i].y, pts[i].pos + 4L * side);
-        }
-
-        int low = 1;
-        int high = 2 * side;
-        int ans = 1;
-
-        while (low <= high) {
-            int mid = low + (high - low) / 2;
-            if (canDo(mid, ext, n, k)) {
-                ans = mid;
-                low = mid + 1;
+        while (l <= r) {
+            int m = l + (r - l) / 2;
+            if (isValidDistance(ordered, k, m)) {
+                ans = m;
+                l = m + 1;
             } else {
-                high = mid - 1;
+                r = m - 1;
             }
         }
 
         return ans;
     }
 
-    private boolean canDo(int D, Point[] ext, int n, int k) {
-        int size = 2 * n;
-        int[] next = new int[size + 1];
-        int j = 0;
+    private boolean isValidDistance(List<int[]> ordered, int k, int d) {
+        Deque<Sequence> dq = new ArrayDeque<>();
+        int[] first = ordered.get(0);
+        dq.add(new Sequence(first[0], first[1], first[0], first[1], 1));
 
-        for (int i = 0; i < size; i++) {
-            if (j < i + 1) {
-                j = i + 1;
-            }
-            while (j < size && ext[j].pos - ext[i].pos < D) {
-                j++;
-            }
-            next[i] = j;
-        }
-        next[size] = size;
+        int maxLength = 1;
 
-        int steps = k - 1;
-        int LOG = 32 - Integer.numberOfLeadingZeros(steps);
-        if (LOG == 0) {
-            LOG = 1;
-        }
+        for (int i = 1; i < ordered.size(); i++) {
+            int x = ordered.get(i)[0];
+            int y = ordered.get(i)[1];
+            int startX = x;
+            int startY = y;
+            int length = 1;
 
-        int[][] up = new int[LOG][size + 1];
-
-        for (int i = 0; i <= size; i++) {
-            up[0][i] = next[i];
-        }
-
-        for (int l = 1; l < LOG; l++) {
-            for (int i = 0; i <= size; i++) {
-                up[l][i] = up[l - 1][up[l - 1][i]];
-            }
-        }
-
-        for (int i = 0; i < n; i++) {
-            int curr = i;
-            for (int l = 0; l < LOG; l++) {
-                if (((steps >> l) & 1) == 1) {
-                    curr = up[l][curr];
+            while (!dq.isEmpty() && dist(x, y, dq.peekFirst().endX, dq.peekFirst().endY) >= d) {
+                Sequence seq = dq.peekFirst();
+                if (dist(x, y, seq.startX, seq.startY) >= d && seq.length + 1 >= length) {
+                    startX = seq.startX;
+                    startY = seq.startY;
+                    length = seq.length + 1;
+                    maxLength = Math.max(maxLength, length);
                 }
+                dq.pollFirst();
             }
-            if (curr < size && ext[curr].pos - ext[i].pos <= 4L * ext[0].pos / 2 + 4L * (ext[i].pos < 4L ? 0 : 0) /* boundary limit */ && ext[i + n].pos - ext[curr].pos >= D) {
-                return true;
-            }
-            if (curr < i + n && ext[i + n].pos - ext[curr].pos >= D) {
-                return true;
-            }
+
+            dq.addLast(new Sequence(startX, startY, x, y, length));
         }
 
-        return false;
+        return maxLength >= k;
     }
 
-    private long getPerimeterPos(int x, int y, long side) {
-        if (y == 0) {
-            return x;
-        } else if (x == side) {
-            return side + y;
-        } else if (y == side) {
-            return 3 * side - x;
-        } else {
-            return 4 * side - y;
-        }
+    private long dist(int x1, int y1, int x2, int y2) {
+        return Math.abs((long) x1 - x2) + Math.abs((long) y1 - y2);
     }
 
-    private static class Point {
-        int x, y;
-        long pos;
+    private List<int[]> getOrderedPoints(int side, int[][] points) {
+        List<int[]> left = new ArrayList<>();
+        List<int[]> top = new ArrayList<>();
+        List<int[]> right = new ArrayList<>();
+        List<int[]> bottom = new ArrayList<>();
 
-        Point(int x, int y, long pos) {
-            this.x = x;
-            this.y = y;
-            this.pos = pos;
+        for (int[] point : points) {
+            int x = point[0];
+            int y = point[1];
+            if (x == 0 && y > 0) {
+                left.add(point);
+            } else if (x > 0 && y == side) {
+                top.add(point);
+            } else if (x == side && y < side) {
+                right.add(point);
+            } else {
+                bottom.add(point);
+            }
         }
+
+        left.sort((a, b) -> Integer.compare(a[1], b[1]));
+        top.sort((a, b) -> Integer.compare(a[0], b[0]));
+        right.sort((a, b) -> Integer.compare(b[1], a[1]));
+        bottom.sort((a, b) -> Integer.compare(b[0], a[0]));
+
+        List<int[]> ordered = new ArrayList<>(points.length);
+        ordered.addAll(left);
+        ordered.addAll(top);
+        ordered.addAll(right);
+        ordered.addAll(bottom);
+
+        return ordered;
     }
 }
