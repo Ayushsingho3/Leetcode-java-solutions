@@ -1,44 +1,76 @@
-class Solution {
-    private static final int[][] DIRS = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+import java.util.ArrayList;
+import java.util.List;
 
+class Solution {
     public boolean containsCycle(char[][] grid) {
         int m = grid.length;
         int n = grid[0].length;
-        boolean[][] visited = new boolean[m][n];
+        int numCells = m * n;
+
+        UnionFind uf = new UnionFind(numCells);
+        boolean[] visited = new boolean[numCells];
+
+        int[][] directions = {{0, 1}, {1, 0}};
 
         for (int r = 0; r < m; r++) {
             for (int c = 0; c < n; c++) {
-                if (!visited[r][c]) {
-                    if (dfs(grid, visited, r, c, -1, -1, grid[r][c])) {
-                        return true;
+                int currId = r * n + c;
+                visited[currId] = true;
+
+                for (int[] dir : directions) {
+                    int nr = r + dir[0];
+                    int nc = c + dir[1];
+
+                    if (nr < m && nc < n && grid[r][c] == grid[nr][nc]) {
+                        int nextId = nr * n + nc;
+                        if (uf.union(currId, nextId)) {
+                            return true;
+                        }
                     }
                 }
             }
         }
+
         return false;
     }
 
-    private boolean dfs(char[][] grid, boolean[][] visited, int r, int c, int pr, int pc, char target) {
-        visited[r][c] = true;
-        int m = grid.length;
-        int n = grid[0].length;
+    private static class UnionFind {
+        private final int[] parent;
+        private final int[] rank;
 
-        for (int[] d : DIRS) {
-            int nr = r + d[0];
-            int nc = c + d[1];
-
-            if (nr >= 0 && nr < m && nc >= 0 && nc < n && grid[nr][nc] == target) {
-                if (nr == pr && nc == pc) {
-                    continue;
-                }
-                if (visited[nr][nc]) {
-                    return true;
-                }
-                if (dfs(grid, visited, nr, nc, r, c, target)) {
-                    return true;
-                }
+        public UnionFind(int size) {
+            parent = new int[size];
+            rank = new int[size];
+            for (int i = 0; i < size; i++) {
+                parent[i] = i;
             }
         }
-        return false;
+
+        public int find(int i) {
+            if (parent[i] == i) {
+                return i;
+            }
+            return parent[i] = find(parent[i]);
+        }
+
+        public boolean union(int i, int j) {
+            int rootI = find(i);
+            int rootJ = find(j);
+
+            if (rootI == rootJ) {
+                return true;
+            }
+
+            if (rank[rootI] < rank[rootJ]) {
+                parent[rootI] = rootJ;
+            } else if (rank[rootI] > rank[rootJ]) {
+                parent[rootJ] = rootI;
+            } else {
+                parent[rootJ] = rootI;
+                rank[rootI]++;
+            }
+
+            return false;
+        }
     }
 }
