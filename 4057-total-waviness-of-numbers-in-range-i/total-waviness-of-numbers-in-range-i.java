@@ -25,52 +25,54 @@ class Solution {
                 }
             }
         }
-        return dfs(0, 10, 10, 0, true)[1];
+        return dfs(0, -1, -1, true, true)[1];
     }
 
-    private long[] dfs(int pos, int prev2, int prev1, int started, boolean limit) {
-        if (pos == cs.length) {
-            return new long[] { started == 1 ? 1 : 0, 0 };
+    private long[] dfs(int idx, int twobefore, int onebefore, boolean leadingZero, boolean isBound) {
+        if (idx == cs.length) {
+            return leadingZero ? new long[] {0, 0} : new long[] {1, 0};
         }
-        int limIdx = limit ? 1 : 0;
-        if (memoCnt[pos][prev2][prev1][started][limIdx] != -1) {
-            return new long[] { memoCnt[pos][prev2][prev1][started][limIdx], memoWav[pos][prev2][prev1][started][limIdx] };
+        int tbIdx = twobefore + 1;
+        int obIdx = onebefore + 1;
+        int lzIdx = leadingZero ? 1 : 0;
+        int boundIdx = isBound ? 1 : 0;
+
+        if (memoCnt[idx][tbIdx][obIdx][lzIdx][boundIdx] != -1) {
+            return new long[] {
+                memoCnt[idx][tbIdx][obIdx][lzIdx][boundIdx],
+                memoWav[idx][tbIdx][obIdx][lzIdx][boundIdx]
+            };
         }
 
-        int up = limit ? cs[pos] - '0' : 9;
-        long totalC = 0;
-        long totalW = 0;
+        int upper = isBound ? cs[idx] - '0' : 9;
+        long totalCount = 0;
+        long totalWaves = 0;
 
-        for (int d = 0; d <= up; ++d) {
-            boolean nlimit = limit && (d == up);
-            int ns, np2, np1, add = 0;
-            if (started == 0) {
-                if (d == 0) {
-                    ns = 0;
-                    np2 = 10;
-                    np1 = 10;
-                } else {
-                    ns = 1;
-                    np2 = 10;
-                    np1 = d;
-                }
+        for (int i = 0; i <= upper; i++) {
+            long wave = 0;
+            int nextTwoBefore, nextOneBefore;
+            if (leadingZero) {
+                nextTwoBefore = -1;
+                nextOneBefore = (i == 0) ? -1 : i;
             } else {
-                ns = 1;
-                np2 = prev1;
-                np1 = d;
-                if (prev2 != 10 && ((prev1 > prev2 && prev1 > d) || (prev1 < prev2 && prev1 < d))) {
-                    add = 1;
+                nextTwoBefore = onebefore;
+                nextOneBefore = i;
+                if (twobefore >= 0 && onebefore >= 0) {
+                    if ((onebefore > twobefore && onebefore > i) || (onebefore < twobefore && onebefore < i)) {
+                        wave = 1;
+                    }
                 }
             }
-            long[] res = dfs(pos + 1, np2, np1, ns, nlimit);
-            long c = res[0];
-            long w = res[1];
-            totalC += c;
-            totalW += w + (long) add * c;
+            boolean nextBound = isBound && (i == upper);
+            boolean nextLeadingZero = leadingZero && (i == 0);
+
+            long[] sub = dfs(idx + 1, nextTwoBefore, nextOneBefore, nextLeadingZero, nextBound);
+            totalCount += sub[0];
+            totalWaves += sub[1] + sub[0] * wave;
         }
 
-        memoCnt[pos][prev2][prev1][started][limIdx] = totalC;
-        memoWav[pos][prev2][prev1][started][limIdx] = totalW;
-        return new long[] { totalC, totalW };
+        memoCnt[idx][tbIdx][obIdx][lzIdx][boundIdx] = totalCount;
+        memoWav[idx][tbIdx][obIdx][lzIdx][boundIdx] = totalWaves;
+        return new long[] {totalCount, totalWaves};
     }
 }
