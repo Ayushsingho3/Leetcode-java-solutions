@@ -5,6 +5,8 @@ class Solution {
 
     public int assignEdgeWeights(int[][] edges) {
         int n = edges.length + 1;
+        if (n == 1) return 0;
+        
         List<Integer>[] g = new ArrayList[n + 1];
         for (int i = 1; i <= n; i++) {
             g[i] = new ArrayList<>();
@@ -15,6 +17,8 @@ class Solution {
         }
 
         int maxDepth = dfs(1, 0, g);
+        if (maxDepth == 0) return 0;
+        
         return (int) power(2, maxDepth - 1);
     }
 
